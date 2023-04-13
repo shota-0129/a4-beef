@@ -1,11 +1,35 @@
-import React, { ReactElement } from 'react';
+import React, { useState } from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SendIcon from '@mui/icons-material/Send';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
 
-const Popup = (): ReactElement => {
-  document.body.style.width = '15rem';
-  document.body.style.height = '15rem';
+import './Popup.css';
+
+const Popup = (): React.ReactElement => {
+  const [text, setText] = useState('');
+
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setText(e.target.value);
+  };
+
+  const handleSend = () => {
+    console.log('#####');
+    console.log(text);
+  };
+
   return (
-    <div className="flex h-screen items-center justify-center">
-      <h1>Popup1</h1>
+    <div className="popup-container">
+      <h1>以下にどんなメールを書きたいか打ち込んでください</h1>
+      <input type="text" value={text} onChange={handleTextChange} />
+      {/* <Stack direction="row" spacing={2}>
+        <Button variant="outlined" startIcon={<DeleteIcon />}>
+          削除
+        </Button>
+        <Button variant="contained" endIcon={<SendIcon />} onClick={handleSend}>
+          送信
+        </Button>
+      </Stack> */}
     </div>
   );
 };
