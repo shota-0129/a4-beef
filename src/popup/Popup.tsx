@@ -14,7 +14,7 @@ interface MyBucket {
   targetReturnText: any;
 }
 
-const bucket = getBucket<MyBucket>('my_bucket', 'sync');
+export const bucket = getBucket<MyBucket>('my_bucket', 'sync');
 
 const Popup = (): React.ReactElement => {
   const [texts, setTexts] = useState({
@@ -37,6 +37,16 @@ const Popup = (): React.ReactElement => {
   const handleDelete = () => {
     setTexts({ ...texts, sendText: '' });
   };
+
+  const inputText = () => {
+    const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]');
+    console.log(textelement);
+    const text = '<div>成功！</div>';
+    if (textelement != null) {
+      //textelement.insertAdjacentHTML('afterbegin',text);
+    }
+  };
+
   return (
     <div>
       <Box sx={{ m: 2 }}>
@@ -61,6 +71,11 @@ const Popup = (): React.ReactElement => {
       <Box sx={{ m: 2 }}>
         以下が返答になります。
         <Textarea color="primary" minRows={3} value={texts.returnText} sx={{ my: 2 }} size="sm" />
+        <Stack direction="row" spacing={2} justifyContent="center">
+          <Button variant="contained" onClick={inputText}>
+            挿入
+          </Button>
+        </Stack>
       </Box>
     </div>
   );
