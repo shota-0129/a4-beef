@@ -10,7 +10,7 @@ const manifest: ManifestV3Export = {
   },
   content_scripts: [
     {
-      matches: ['http://*/*', 'https://*/*', 'file:///*'],
+      matches: ['https://mail.google.com/*'],
       js: ['src/content/index.tsx'],
     },
   ],
