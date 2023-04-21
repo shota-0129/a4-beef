@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react';
 //import { Gmail_icon } from '../../public/images/Gmail_icon.png';
 import { AiOutlineMail } from 'react-icons/ai';
+import Box from '@mui/material/Box';
 
 import { Counter } from './features/counter';
 
