@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { getBucket } from '@extend-chrome/storage';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
 import Textarea from '@mui/joy/Textarea';
@@ -8,13 +7,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 
 import connectGPT from '../../../connectGPT';
-
-interface MyBucket {
-  targetSendText: string;
-  targetReturnText: any;
-}
-
-const bucket = getBucket<MyBucket>('my_bucket', 'sync');
+import { bucket } from '../../../myBucket';
 
 export function Counter() {
   const [texts, setTexts] = useState({
@@ -28,7 +21,9 @@ export function Counter() {
   };
 
   const handleSend = async () => {
-    const returnText = await connectGPT(import.meta.env.VITE_OPENAI_API_KEY, texts.sendText);
+    const mybucket = await bucket.get();
+    const apikey = mybucket.apiKey.toString();
+    const returnText = await connectGPT(apikey, texts.sendText);
     await bucket.set({ targetReturnText: returnText });
     const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]')[1];
     console.log(textelement);

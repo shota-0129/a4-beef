@@ -1,84 +1,94 @@
-import React, { useState } from 'react';
-import { getBucket } from '@extend-chrome/storage';
+import { useEffect, useState } from 'react';
+import React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
-import Textarea from '@mui/joy/Textarea';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
 
-import connectGPT from '../connectGPT';
-
-interface MyBucket {
-  targetSendText: string;
-  targetReturnText: any;
-}
-
-export const bucket = getBucket<MyBucket>('my_bucket', 'sync');
+import { bucket } from '../myBucket';
 
 const Popup = (): React.ReactElement => {
-  const [texts, setTexts] = useState({
-    sendText: '',
-    returnText: '',
+  const [apikeys, setApikey] = useState({
+    api: '',
+    judge: false,
   });
 
-  const handleTextChange = async (event: any) => {
-    setTexts({ ...texts, sendText: event.target.value });
-    await bucket.set({ targetSendText: event.target.value });
-  };
-
-  const handleSend = async () => {
-    const returnText = await connectGPT(import.meta.env.VITE_OPENAI_API_KEY, texts.sendText);
-    await bucket.set({ targetReturnText: returnText });
-    const message = await bucket.get();
-    setTexts({ ...texts, returnText: message.targetReturnText });
-  };
-
-  const handleDelete = () => {
-    setTexts({ ...texts, sendText: '' });
-  };
-
-  const inputText = () => {
-    const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]');
-    console.log(textelement);
-    const text = '<div>成功！</div>';
-    if (textelement != null) {
-      //textelement.insertAdjacentHTML('afterbegin',text);
+  const returnAPI = async () => {
+    const mybucket = await bucket.get();
+    const apikey = mybucket.apiKey;
+    if (apikey !== '' && apikey !== undefined) {
+      return true;
+    } else {
+      return false;
     }
   };
 
-  return (
-    <div>
-      <Box sx={{ m: 2 }}>
-        以下にどんなメールを書きたいか打ち込んでください
-        <Textarea
-          color="primary"
-          minRows={3}
-          onChange={handleTextChange}
-          value={texts.sendText}
-          sx={{ my: 2 }}
-          size="sm"
-        />
-        <Stack direction="row" spacing={2} justifyContent="center">
-          <Button variant="outlined" onClick={handleDelete} startIcon={<DeleteIcon />}>
-            削除
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await returnAPI();
+      await setApikey({ ...apikeys, judge: response });
+    };
+    fetchData();
+  }, []);
+
+  const handleTextChange = async (event: any) => {
+    await setApikey({ ...apikeys, api: event.target.value });
+  };
+
+  const saveAPIKEY = async () => {
+    await bucket.set({ apiKey: apikeys.api });
+    await setApikey({ ...apikeys, api: '' });
+    await setApikey({ ...apikeys, judge: true });
+  };
+
+  const deleteAPIKEY = async () => {
+    await bucket.set({ apiKey: '' });
+    const mybucket = await bucket.get();
+    const apikey = mybucket.apiKey;
+    setApikey({ ...apikeys, api: '' });
+    await setApikey({ ...apikeys, judge: false });
+  };
+
+  function judgeAPI() {
+    if (apikeys.judge) {
+      return (
+        <Box sx={{ m: 2, width: 200 }}>
+          <div>APIKEYが保存されています</div>
+          <Button
+            sx={{ m: 2 }}
+            variant="contained"
+            onClick={deleteAPIKEY}
+            startIcon={<DeleteIcon />}
+          >
+            APIを削除
           </Button>
-          <Button variant="contained" onClick={handleSend} endIcon={<SendIcon />}>
-            送信
-          </Button>
-        </Stack>
-      </Box>
-      <Box sx={{ m: 2 }}>
-        以下が返答になります。
-        <Textarea color="primary" minRows={3} value={texts.returnText} sx={{ my: 2 }} size="sm" />
-        <Stack direction="row" spacing={2} justifyContent="center">
-          <Button variant="contained" onClick={inputText}>
-            挿入
-          </Button>
-        </Stack>
-      </Box>
-    </div>
-  );
+        </Box>
+      );
+    } else {
+      return (
+        <Box sx={{ m: 2, width: 300 }}>
+          <Box sx={{ mt: 2 }}>APIKeyを貼り付けてください</Box>
+          <TextField
+            id="outlined-basic"
+            label="APIKEY"
+            variant="outlined"
+            value={apikeys.api}
+            onChange={handleTextChange}
+            sx={{ m: 1, width: 300 }}
+          />
+          <Stack direction="row" spacing={2} justifyContent="flex-end">
+            <Button variant="contained" onClick={saveAPIKEY} endIcon={<SendIcon />}>
+              保存
+            </Button>
+          </Stack>
+        </Box>
+      );
+    }
+  }
+
+  return <div>{judgeAPI()}</div>;
 };
 
 export default Popup;
