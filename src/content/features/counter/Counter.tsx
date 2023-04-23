@@ -1,4 +1,10 @@
 import React, { useState } from 'react';
+import { AiOutlineMail } from 'react-icons/ai';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
 import Textarea from '@mui/joy/Textarea';
@@ -46,42 +52,55 @@ export function Counter() {
   // };
 
   return (
-    <div>
-      <Box sx={{ m: 2 }}>
-        以下にどんなメールを書きたいか打ち込んでください
-        <Textarea
-          color="primary"
-          minRows={5}
-          maxRows={5}
-          onChange={handleTextChange}
-          value={texts.sendText}
-          sx={{ my: 2 }}
-          size="sm"
-        />
-        <Stack direction="row" spacing={2} justifyContent="flex-end">
-          {/* <Button variant="outlined" onClick={handleDelete} startIcon={<DeleteIcon />}>
-            削除
-          </Button> */}
-          <Button variant="contained" onClick={handleSend} endIcon={<SendIcon />}>
-            お願いGPT
-          </Button>
-        </Stack>
-        {/* <Box sx={{ m: 2 }}>
-          以下が返答になります。
-          <Textarea 
-            color="primary" 
-            minRows={5}
-            maxRows={5}
-            value={texts.returnText} 
-            sx={{ my: 2 }} 
-            size="sm" />
-          <Stack direction="row" spacing={2} justifyContent="center">
-            <Button variant="contained" onClick={inputText}>
-              挿入
-            </Button>
-          </Stack>
-        </Box> */}
-      </Box>
-    </div>
+    <Box>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography>Gmail GPT</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <div>
+            <Box sx={{ m: 2, width: 300 }}>
+              以下にどんなメールを書きたいか打ち込んでください
+              <Textarea
+                color="primary"
+                minRows={5}
+                maxRows={5}
+                onChange={handleTextChange}
+                value={texts.sendText}
+                sx={{ my: 2 }}
+                size="sm"
+              />
+              <Stack direction="row" spacing={2} justifyContent="flex-end">
+                {/* <Button variant="outlined" onClick={handleDelete} startIcon={<DeleteIcon />}>
+                削除
+              </Button> */}
+                <Button variant="contained" onClick={handleSend} endIcon={<SendIcon />}>
+                  お願いGPT
+                </Button>
+              </Stack>
+              {/* <Box sx={{ m: 2 }}>
+              以下が返答になります。
+              <Textarea 
+                color="primary" 
+                minRows={5}
+                maxRows={5}
+                value={texts.returnText} 
+                sx={{ my: 2 }} 
+                size="sm" />
+              <Stack direction="row" spacing={2} justifyContent="center">
+                <Button variant="contained" onClick={inputText}>
+                  挿入
+                </Button>
+              </Stack>
+            </Box> */}
+            </Box>
+          </div>
+        </AccordionDetails>
+      </Accordion>
+    </Box>
   );
 }
