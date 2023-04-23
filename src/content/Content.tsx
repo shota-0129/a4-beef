@@ -1,4 +1,6 @@
 import React, { ReactElement } from 'react';
+//import { Gmail_icon } from '../../public/images/Gmail_icon.png';
+import Box from '@mui/material/Box';
 
 import { Counter } from './features/counter';
 
@@ -9,11 +11,10 @@ const Content = (): ReactElement => {
         position: 'fixed',
         zIndex: 999,
         bottom: 0,
-        right: 0,
-        backgroundColor: 'rgb(0 0 0 / 30%)',
+        left: 0,
+        backgroundColor: 'rgb(255 255 255 / 100%)',
       }}
     >
-      <div style={{ display: 'flex', justifyContent: 'center' }}>Content Example</div>
       <Counter />
     </div>
   );

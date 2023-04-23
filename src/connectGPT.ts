@@ -13,8 +13,13 @@ export default async function connectGPT(apikey: string, text: string) {
   const completion = await openai.createChatCompletion({
     model: 'gpt-3.5-turbo',
     messages: [{ role: 'user', content: text }],
-    max_tokens: 200,
   });
 
-  return completion.data.choices[0].message?.content;
+  const returnText = completion.data.choices[0].message?.content;
+
+  if (returnText === undefined) {
+    return 'ERROR';
+  }
+
+  return returnText;
 }
