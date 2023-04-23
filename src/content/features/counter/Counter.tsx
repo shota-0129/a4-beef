@@ -19,6 +19,7 @@ export function Counter() {
   const [texts, setTexts] = useState({
     sendText: '',
     returnText: '',
+    useful: true,
   });
 
   const handleTextChange = async (event: any) => {
@@ -27,14 +28,17 @@ export function Counter() {
   };
 
   const handleSend = async () => {
+    setTexts({ ...texts, useful: false });
     const mybucket = await bucket.get();
     const apikey = mybucket.apiKey.toString();
     const returnText = await connectGPT(apikey, texts.sendText);
     await bucket.set({ targetReturnText: returnText });
     const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]')[1];
-    console.log(textelement);
+    setTexts({ ...texts, returnText: returnText, useful: true });
     if (textelement != null) {
       textelement.insertAdjacentHTML('afterbegin', returnText);
+    } else {
+      alert('メッセージを直接代入できませんでした。返って文章です\n\n' + returnText);
     }
   };
 
@@ -42,14 +46,14 @@ export function Counter() {
     setTexts({ ...texts, sendText: '' });
   };
 
-  // const inputText = async () => {
-  //   const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]')[1];
-  //   console.log(textelement);
-  //   const text = (await bucket.get()).targetReturnText;
-  //   if (textelement != null) {
-  //     textelement.insertAdjacentHTML('afterbegin', text);
-  //   }
-  // };
+  const inputText = async () => {
+    const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]')[1];
+    console.log(textelement);
+    const text = (await bucket.get()).targetReturnText;
+    if (textelement != null) {
+      textelement.insertAdjacentHTML('afterbegin', text);
+    }
+  };
 
   return (
     <Box>
@@ -78,25 +82,30 @@ export function Counter() {
                 {/* <Button variant="outlined" onClick={handleDelete} startIcon={<DeleteIcon />}>
                 削除
               </Button> */}
-                <Button variant="contained" onClick={handleSend} endIcon={<SendIcon />}>
+                <Button
+                  variant="contained"
+                  onClick={handleSend}
+                  endIcon={<SendIcon />}
+                  disabled={!texts.useful}
+                >
                   お願いGPT
                 </Button>
               </Stack>
-              {/* <Box sx={{ m: 2 }}>
+              {/* <Box>
               以下が返答になります。
               <Textarea 
                 color="primary" 
-                minRows={5}
-                maxRows={5}
+                minRows={3}
+                maxRows={3}
                 value={texts.returnText} 
                 sx={{ my: 2 }} 
                 size="sm" />
-              <Stack direction="row" spacing={2} justifyContent="center">
+              <Stack direction="row" spacing={2} justifyContent="flex-end">
                 <Button variant="contained" onClick={inputText}>
-                  挿入
+                  メールに挿入
                 </Button>
               </Stack>
-            </Box> */}
+              </Box> */}
             </Box>
           </div>
         </AccordionDetails>
