@@ -11,7 +11,9 @@ import Textarea from '@mui/joy/Textarea';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
+import { BiMailSend } from '@react-icons/all-files/bi/BiMailSend';
 
+import icon from '../../../../images/icons_16.png';
 import connectGPT from '../../../connectGPT';
 import { bucket } from '../../../myBucket';
 
@@ -31,14 +33,19 @@ export function Counter() {
     setTexts({ ...texts, useful: false });
     const mybucket = await bucket.get();
     const apikey = mybucket.apiKey.toString();
-    const returnText = await connectGPT(apikey, texts.sendText);
-    await bucket.set({ targetReturnText: returnText });
-    const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]')[1];
-    setTexts({ ...texts, returnText: returnText, useful: true });
-    if (textelement != null) {
-      textelement.insertAdjacentHTML('afterbegin', returnText);
+    if (apikey === '' || apikey === undefined) {
+      alert('PoPupからAPIKeyを入力してください');
+      setTexts({ ...texts, useful: true });
     } else {
-      alert('メッセージを直接代入できませんでした。返って文章です\n\n' + returnText);
+      const returnText = await connectGPT(apikey, texts.sendText);
+      await bucket.set({ targetReturnText: returnText });
+      const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]')[1];
+      setTexts({ ...texts, returnText: returnText, useful: true });
+      if (textelement != null) {
+        textelement.insertAdjacentHTML('afterbegin', returnText);
+      } else {
+        alert('メッセージを直接代入できませんでした。返って文章です\n\n' + returnText);
+      }
     }
   };
 
@@ -64,6 +71,7 @@ export function Counter() {
           id="panel1a-header"
         >
           <Typography>Gmail GPT</Typography>
+          <BiMailSend />
         </AccordionSummary>
         <AccordionDetails>
           <div>
