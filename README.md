@@ -2,4 +2,4 @@
 
 MIT © 2023 Shota Mizusaki
 
-© [Sinan Bekar](https://sinan.engineer)
+© 2022 [Sinan Bekar](https://sinan.engineer)

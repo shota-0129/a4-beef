@@ -24,3 +24,4 @@ dist_firefox
 *.sln
 *.sw?
 .env
+*.zip
