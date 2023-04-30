@@ -4,8 +4,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
+import axios from 'axios';
 
 import { bucket } from '../myBucket';
 
@@ -14,6 +16,7 @@ const Userpop = (): React.ReactElement => {
     username: '',
     password: '',
     judge: false,
+    checked: false,
   });
 
   const returnUserName = async () => {
@@ -58,6 +61,14 @@ const Userpop = (): React.ReactElement => {
 
   const saveUser = async () => {
     if (checkMail(users.username)) {
+      axios.get(
+        'https://script.google.com/macros/s/AKfycbyisbXKbwNBvRIUbgK0v9xYLklWu-usvFxjoIcQhSbtfWlMDVH9h67R-G79gVLB0MdeKQ/exec',
+        {
+          params: {
+            address: users.username,
+          },
+        }
+      );
       await bucket.set({ userName: users.username });
       await bucket.set({ password: users.password });
       await setUser({ ...users, username: '', password: '', judge: true });
@@ -83,6 +94,10 @@ const Userpop = (): React.ReactElement => {
     }
   };
 
+  const handleChecked = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUser({ ...users, checked: event.target.checked });
+  };
+
   function displayUser() {
     if (users.judge) {
       return (
@@ -104,15 +119,26 @@ const Userpop = (): React.ReactElement => {
           <Box sx={{ mt: 2 }}>スパム防止とアップデートのお知らせのためにE-mailを教えてください</Box>
           <TextField
             id="outlined-basic"
-            label="username"
+            label="E-mail"
             variant="outlined"
             value={users.username}
             onChange={handleUsernameChange}
             sx={{ m: 1, width: 300 }}
           />
-          <Stack direction="row" spacing={2} justifyContent="flex-end">
-            <Button variant="contained" onClick={saveUser} endIcon={<SendIcon />}>
-              保存
+          <Stack direction="row" justifyContent="flex-end" alignItems="center">
+            <Checkbox
+              checked={users.checked}
+              onChange={handleChecked}
+              inputProps={{ 'aria-label': 'controlled' }}
+            />
+            <Box sx={{ pr: 5 }}>運営者がメールアドレスを取得することに同意する。</Box>
+            <Button
+              variant="contained"
+              onClick={saveUser}
+              endIcon={<SendIcon />}
+              disabled={!users.checked}
+            >
+              送信
             </Button>
           </Stack>
         </Box>

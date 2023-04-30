@@ -18,15 +18,6 @@ const manifest: ManifestV3Export = {
     page: 'src/options/options.html',
     open_in_tab: true,
   },
-  web_accessible_resources: [
-    {
-      resources: [
-        // this file is web accessible; it supports HMR b/c it's declared in `rollupOptions.input`
-        'src/welcome/welcome.html',
-      ],
-      matches: ['<all_urls>'],
-    },
-  ],
   action: {
     default_popup: 'src/popup/popup.html',
     default_icon: {
@@ -42,7 +33,7 @@ const manifest: ManifestV3Export = {
     '48': 'images/icons_48.png',
     '128': 'images/icons_128.png',
   },
-  permissions: ['storage', 'tabs'],
+  permissions: ['storage'],
 };
 
 export default manifest;

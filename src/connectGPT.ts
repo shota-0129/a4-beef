@@ -9,17 +9,20 @@ export default async function connectGPT(apikey: string, text: string) {
   // delete configuration.baseOptions.headers['User-Agent'];
 
   const openai = new OpenAIApi(configuration);
-  console.log(text);
+  const textForGPT = text + '\n以下のフォーマットで書いてください。\n\n件名:〇〇\n\n本文:〇〇';
+  console.log(textForGPT);
   const completion = await openai.createChatCompletion({
     model: 'gpt-3.5-turbo',
-    messages: [{ role: 'user', content: text }],
+    messages: [{ role: 'user', content: textForGPT }],
   });
 
   const returnText = completion.data.choices[0].message?.content;
+
+  console.log(returnText);
 
   if (returnText === undefined) {
     return 'ERROR';
   }
 
-  return returnText;
+  return returnText.replace(/\n/g, '<br>');
 }
