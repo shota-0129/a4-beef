@@ -10,7 +10,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        welcome: join(__dirname, 'src/welcome/welcome.html'),
+        welcome: join(__dirname, 'src/popup/popup.html'),
       },
       output: {
         chunkFileNames: 'assets/chunk-[hash].js',

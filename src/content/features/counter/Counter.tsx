@@ -42,7 +42,7 @@ export function Counter() {
       let subject;
       let body;
       if (result) {
-        subject = result[1]; // 件名を取得します。
+        subject = result[1].trim(); // 件名を取得します。
         body = result[2]; // 本文を取得します。
         body.replace('<br>', '');
       } else {
