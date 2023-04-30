@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { AiOutlineMail } from 'react-icons/ai';
+// import { AiOutlineMail } from 'react-icons/ai';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import DeleteIcon from '@mui/icons-material/Delete';
+// import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
 import Textarea from '@mui/joy/Textarea';
 import Box from '@mui/material/Box';
@@ -13,7 +13,6 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { BiMailSend } from '@react-icons/all-files/bi/BiMailSend';
 
-import icon from '../../../../images/icons_16.png';
 import connectGPT from '../../../connectGPT';
 import { bucket } from '../../../myBucket';
 
@@ -128,6 +127,13 @@ export function Counter() {
                 </Button>
               </Stack>
               </Box> */}
+              <Typography component="div">
+                <Box sx={{ mt: 2 }} fontSize={12}>
+                  感想・要望がある場合は
+                  <a href="https://forms.gle/NeQmnQbqZocNfPuB9">こちらのフォーム</a>
+                  から送ってもらえると嬉しいです。
+                </Box>
+              </Typography>
             </Box>
           </div>
         </AccordionDetails>

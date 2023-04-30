@@ -14,6 +14,16 @@ const manifest: ManifestV3Export = {
       js: ['src/content/index.tsx'],
     },
   ],
+  host_permissions: ['<all_urls>'],
+  web_accessible_resources: [
+    {
+      resources: [
+        // this file is web accessible; it supports HMR b/c it's declared in `rollupOptions.input`
+        'src/welcome/welcome.html',
+      ],
+      matches: ['<all_urls>'],
+    },
+  ],
   options_ui: {
     page: 'src/options/options.html',
     open_in_tab: true,
@@ -33,7 +43,7 @@ const manifest: ManifestV3Export = {
     '48': 'images/icons_48.png',
     '128': 'images/icons_128.png',
   },
-  permissions: ['storage'],
+  permissions: ['storage', 'tabs'],
 };
 
 export default manifest;
