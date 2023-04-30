@@ -38,11 +38,25 @@ export function Counter() {
       setTexts({ ...texts, useful: true });
     } else {
       const returnText = await connectGPT(apikey, texts.sendText);
+      const regex = /件名:(.+?)<br><br>本文:(.+)/s;
+      const result = returnText.match(regex);
+      let subject;
+      let body;
+      if (result) {
+        subject = result[1]; // 件名を取得します。
+        body = result[2]; // 本文を取得します。
+        body.replace('<br>', '');
+      } else {
+        subject = '';
+        body = returnText;
+      }
       await bucket.set({ targetReturnText: returnText });
       const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]')[1];
       setTexts({ ...texts, returnText: returnText, useful: true });
       if (textelement != null) {
-        textelement.insertAdjacentHTML('afterbegin', returnText);
+        const subjectbox = document.getElementsByName('subjectbox')[0] as HTMLInputElement;
+        subjectbox.value = subject;
+        textelement.insertAdjacentHTML('afterbegin', body);
       } else {
         alert('メッセージを直接代入できませんでした。返って文章です\n\n' + returnText);
       }

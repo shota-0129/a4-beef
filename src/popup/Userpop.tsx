@@ -119,7 +119,7 @@ const Userpop = (): React.ReactElement => {
           <Box sx={{ mt: 2 }}>スパム防止とアップデートのお知らせのためにE-mailを教えてください</Box>
           <TextField
             id="outlined-basic"
-            label="username"
+            label="E-mail"
             variant="outlined"
             value={users.username}
             onChange={handleUsernameChange}
@@ -131,14 +131,14 @@ const Userpop = (): React.ReactElement => {
               onChange={handleChecked}
               inputProps={{ 'aria-label': 'controlled' }}
             />
-            <Box sx={{ pr: 7 }}>利用規約に同意</Box>
+            <Box sx={{ pr: 5 }}>運営者がメールアドレスを取得することに同意する。</Box>
             <Button
               variant="contained"
               onClick={saveUser}
               endIcon={<SendIcon />}
               disabled={!users.checked}
             >
-              保存
+              送信
             </Button>
           </Stack>
         </Box>
