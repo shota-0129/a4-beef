@@ -2,7 +2,7 @@ import { ManifestV3Export } from '@crxjs/vite-plugin';
 
 const manifest: ManifestV3Export = {
   manifest_version: 3,
-  name: 'Gmail Automatic Creation',
+  name: 'Gmail GPT',
   description: 'Automate the creation of emails in gmail using GPT3.5',
   version: '1.0',
   background: {
@@ -14,6 +14,7 @@ const manifest: ManifestV3Export = {
       js: ['src/content/index.tsx'],
     },
   ],
+  host_permissions: ['<all_urls>'],
   options_ui: {
     page: 'src/options/options.html',
     open_in_tab: true,
