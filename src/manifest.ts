@@ -4,7 +4,7 @@ const manifest: ManifestV3Export = {
   manifest_version: 3,
   name: 'Gmail GPT',
   description: 'Automate the creation of emails in gmail using GPT3.5',
-  version: '1.0',
+  version: '1.2',
   background: {
     service_worker: 'src/background/index.ts',
   },

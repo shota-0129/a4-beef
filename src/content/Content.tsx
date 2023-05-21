@@ -3,7 +3,7 @@ import React, { ReactElement } from 'react';
 // import { Link } from '@mui/material';
 //import { Gmail_icon } from '../../public/images/Gmail_icon.png';
 // import Box from '@mui/material/Box';
-import { Counter } from './features/counter/Counter';
+import { Main } from './features/main/Main';
 
 const Content = (): ReactElement => {
   return (
@@ -16,7 +16,7 @@ const Content = (): ReactElement => {
         backgroundColor: 'rgb(255 255 255 / 100%)',
       }}
     >
-      <Counter />
+      <Main />
     </div>
   );
 };
