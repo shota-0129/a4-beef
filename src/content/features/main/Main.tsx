@@ -13,8 +13,8 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { BiMailSend } from '@react-icons/all-files/bi/BiMailSend';
 
-import connectGPT from '../../../connectGPT';
 import { bucket } from '../../../myBucket';
+import { newMail } from '../../../newMail';
 
 export function Main() {
   const [texts, setTexts] = useState({
@@ -36,7 +36,7 @@ export function Main() {
       alert('PoPupからAPIKeyを入力してください');
       setTexts({ ...texts, useful: true });
     } else {
-      const returnText = await connectGPT(apikey, texts.sendText);
+      const returnText = await newMail(apikey, texts.sendText);
       const regex = /件名:(.+?)<br><br>本文:(.+)/s;
       const result = returnText.match(regex);
       let subject;

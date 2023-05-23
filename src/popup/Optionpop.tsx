@@ -31,7 +31,7 @@ const Optionpopup = (): React.ReactElement => {
             className={styles.url}
           >
             shota.mizusaki.01@gmail.com
-          </button>{' '}
+          </button>
           （クリックでコピー）までご連絡ください！
         </div>
       </Box>
