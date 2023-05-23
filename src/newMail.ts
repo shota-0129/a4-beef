@@ -1,6 +1,6 @@
 import { Configuration, OpenAIApi } from 'openai';
 
-export default async function connectGPT(apikey: string, text: string) {
+export async function newMail(apikey: string, text: string) {
   const configuration = new Configuration({
     // organization:"org-asd",
     apiKey: apikey,

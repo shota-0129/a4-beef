@@ -13,10 +13,10 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { BiMailSend } from '@react-icons/all-files/bi/BiMailSend';
 
-import connectGPT from '../../../connectGPT';
 import { bucket } from '../../../myBucket';
+import { newMail } from '../../../newMail';
 
-export function Counter() {
+export function Main() {
   const [texts, setTexts] = useState({
     sendText: '',
     returnText: '',
@@ -36,11 +36,12 @@ export function Counter() {
       alert('PoPupからAPIKeyを入力してください');
       setTexts({ ...texts, useful: true });
     } else {
-      const returnText = await connectGPT(apikey, texts.sendText);
+      const returnText = await newMail(apikey, texts.sendText);
       const regex = /件名:(.+?)<br><br>本文:(.+)/s;
       const result = returnText.match(regex);
       let subject;
       let body;
+
       if (result) {
         subject = result[1].trim(); // 件名を取得します。
         body = result[2]; // 本文を取得します。
@@ -49,29 +50,22 @@ export function Counter() {
         subject = '';
         body = returnText;
       }
+
       await bucket.set({ targetReturnText: returnText });
       const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]')[1];
       setTexts({ ...texts, returnText: returnText, useful: true });
+
       if (textelement != null) {
         const subjectbox = document.getElementsByName('subjectbox')[0] as HTMLInputElement;
-        subjectbox.value = subject;
+        if (subjectbox) {
+          subjectbox.value = subject;
+        }
         textelement.insertAdjacentHTML('afterbegin', body);
       } else {
-        alert('メッセージを直接代入できませんでした。返って文章です\n\n' + returnText);
+        alert(
+          'メッセージを直接代入できませんでした。新しいメールを開いてください\n\n' + returnText
+        );
       }
-    }
-  };
-
-  const handleDelete = () => {
-    setTexts({ ...texts, sendText: '' });
-  };
-
-  const inputText = async () => {
-    const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]')[1];
-    console.log(textelement);
-    const text = (await bucket.get()).targetReturnText;
-    if (textelement != null) {
-      textelement.insertAdjacentHTML('afterbegin', text);
     }
   };
 
@@ -100,9 +94,6 @@ export function Counter() {
                 size="sm"
               />
               <Stack direction="row" spacing={2} justifyContent="flex-end">
-                {/* <Button variant="outlined" onClick={handleDelete} startIcon={<DeleteIcon />}>
-                削除
-              </Button> */}
                 <Button
                   variant="contained"
                   onClick={handleSend}
@@ -112,21 +103,6 @@ export function Counter() {
                   お願いGPT
                 </Button>
               </Stack>
-              {/* <Box>
-              以下が返答になります。
-              <Textarea 
-                color="primary" 
-                minRows={3}
-                maxRows={3}
-                value={texts.returnText} 
-                sx={{ my: 2 }} 
-                size="sm" />
-              <Stack direction="row" spacing={2} justifyContent="flex-end">
-                <Button variant="contained" onClick={inputText}>
-                  メールに挿入
-                </Button>
-              </Stack>
-              </Box> */}
               <Typography component="div">
                 <Box sx={{ mt: 2 }} fontSize={12}>
                   感想・要望がある場合は
