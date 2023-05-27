@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
+import SendIcon from '@mui/icons-material/Send';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
-import Typography from '@mui/material/Typography';
 
 import ModalMail from './ModalMail';
 
@@ -41,8 +41,8 @@ export const ShowMail = () => {
       const rect = range.getBoundingClientRect();
       setButton({
         display: 'inline',
-        top: rect.bottom,
-        left: rect.right,
+        top: rect.bottom * 1.01,
+        left: rect.left,
       });
       // console.log(selectedText.toString())
       // console.log("inline")
@@ -64,10 +64,6 @@ export const ShowMail = () => {
     setModalOpen(!isModalOpen);
   };
 
-  const handleClose = () => {
-    setModalOpen(false);
-  };
-
   return (
     <>
       <Box
@@ -77,10 +73,16 @@ export const ShowMail = () => {
           position: 'absolute',
           top: button.top,
           left: button.left,
+          zIndex: 'modal',
         }}
       >
-        <Button variant="contained" onClick={handleClick}>
-          返信する
+        <Button
+          variant="contained"
+          onClick={handleClick}
+          size="small"
+          endIcon={<KeyboardReturnIcon />}
+        >
+          返信
         </Button>
       </Box>
       {isModalOpen && <ModalMail requestText={requestText} />}

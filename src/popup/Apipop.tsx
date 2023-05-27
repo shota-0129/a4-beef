@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SaveIcon from '@mui/icons-material/Save';
 import SendIcon from '@mui/icons-material/Send';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -77,7 +78,7 @@ const Apipop = (): React.ReactElement => {
             sx={{ m: 1, width: 300 }}
           />
           <Stack direction="row" spacing={2} justifyContent="flex-end">
-            <Button variant="contained" onClick={saveAPIKEY} endIcon={<SendIcon />}>
+            <Button variant="contained" onClick={saveAPIKEY} startIcon={<SaveIcon />}>
               保存
             </Button>
           </Stack>

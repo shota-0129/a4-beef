@@ -5,7 +5,7 @@ interface MyBucket {
   targetReturnText: any;
   userName: string;
   password: string;
-  apiKey: any;
+  apiKey: string;
 }
 
 export const bucket = getBucket<MyBucket>('my_bucket', 'sync');
