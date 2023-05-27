@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-// import { AiOutlineMail } from 'react-icons/ai';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 // import DeleteIcon from '@mui/icons-material/Delete';
-import SendIcon from '@mui/icons-material/Send';
 import Textarea from '@mui/joy/Textarea';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -15,6 +13,9 @@ import { BiMailSend } from '@react-icons/all-files/bi/BiMailSend';
 
 import { bucket } from '../../../myBucket';
 import { newMail } from '../../../newMail';
+
+// import { AiOutlineMail } from 'react-icons/ai';
+import Endicon from './Endicon';
 
 export function Main() {
   const [texts, setTexts] = useState({
@@ -31,7 +32,8 @@ export function Main() {
   const handleSend = async () => {
     setTexts({ ...texts, useful: false });
     const mybucket = await bucket.get();
-    const apikey = mybucket.apiKey.toString();
+    const apikey = mybucket.apiKey;
+    console.log(apikey);
     if (apikey === '' || apikey === undefined) {
       alert('PoPupからAPIKeyを入力してください');
       setTexts({ ...texts, useful: true });
@@ -63,7 +65,7 @@ export function Main() {
         textelement.insertAdjacentHTML('afterbegin', body);
       } else {
         alert(
-          'メッセージを直接代入できませんでした。新しいメールを開いてください\n\n' + returnText
+          'メッセージを直接代入できませんでした。\n作成ボタンを押して、新しいメッセージを開いた状態で、お待ちください'
         );
       }
     }
@@ -92,13 +94,14 @@ export function Main() {
                 value={texts.sendText}
                 sx={{ my: 2 }}
                 size="sm"
+                placeholder="例：GmailGPTを作った神戸大学院の水崎くんに弊社への採用を見据えた面談のオファーをしたい。また、面談の希望日は6/1,6/3の午後で1時間想定であることを伝えたい"
               />
-              <Stack direction="row" spacing={2} justifyContent="flex-end">
+              <Stack direction="row" justifyContent="flex-end">
                 <Button
                   variant="contained"
                   onClick={handleSend}
-                  endIcon={<SendIcon />}
                   disabled={!texts.useful}
+                  endIcon={<Endicon is_connecting={!texts.useful} />}
                 >
                   お願いGPT
                 </Button>

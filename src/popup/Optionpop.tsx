@@ -14,7 +14,7 @@ const Optionpopup = (): React.ReactElement => {
         ※使い方は
         <a
           target="_blank"
-          href="https://qiita.com/TK_WebSE/items/33f599951eff624a7d8a"
+          href="https://drive.google.com/file/d/1j35RQQj6CO7hf-RTnms5dV5c-oSVhJdn/view?usp=sharing"
           className={styles.url}
           rel="noreferrer"
         >
@@ -26,11 +26,8 @@ const Optionpopup = (): React.ReactElement => {
         <div>製作者は、25卒で絶賛就活中です。</div>
         <div>
           興味を持っていただけた方は、GmailGPTを使って、
-          <button
-            onClick={() => copyTextToClipboard('shota.mizusaki.01@gmail.com')}
-            className={styles.url}
-          >
-            shota.mizusaki.01@gmail.com
+          <button onClick={() => copyTextToClipboard('nrxg129@gmail.com')} className={styles.url}>
+            nrxg129@gmail.com
           </button>
           （クリックでコピー）までご連絡ください！
         </div>

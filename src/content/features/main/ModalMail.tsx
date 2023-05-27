@@ -63,7 +63,7 @@ export const ModalMail = (props: any) => {
             <Textarea
               color="neutral"
               minRows={5}
-              maxRows={10}
+              maxRows={15}
               value={returnText}
               sx={{ my: 2 }}
               size="sm"
