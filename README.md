@@ -1,6 +1,7 @@
 # Gmail GPT
 
-Gmailにおいて、GPT3.5を用いてメール文の作成を自動で行う
+Chromeの拡張機能です。
+Gmailにおいて、GPT3.5を用いてメール文の作成を自動で行います。
 
 # DEMO
 
@@ -10,20 +11,17 @@ Gmailにおいて、GPT3.5を用いてメール文の作成を自動で行う
 
 # Features
 
-・新規メール、返信メールを自動で生成できます。また、　Chromeの拡張機能なのでサーバーなどは不要です。
+新規メール、返信メールを自動で生成できます。
+また、　Chromeの拡張機能なのでサーバーなどは不要です。
 
 
-# Installation
-
-```bash
-yarn install
-```
 
 # Usage
 
 ```bash
 git clone https://github.com/shota-0129/Gmail_Extension.git
 cd Gmail_Extension
+yarn install
 yarn dev
 yarn build
 ```
