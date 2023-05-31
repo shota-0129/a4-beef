@@ -10,37 +10,31 @@ Gmailにおいて、GPT3.5を用いてメール文の作成を自動で行う
 
 # Features
 
-"hoge"のセールスポイントや差別化などを説明する
+・新規メール、返信メールを自動で生成できます。また、　Chromeの拡張機能なのでサーバーなどは不要です。
 
 
 # Installation
 
 ```bash
 yarn install
-yarn dev or yarn build
 ```
 
 # Usage
 
-DEMOの実行方法など、"hoge"の基本的な使い方を説明する
-
 ```bash
-git clone https://github.com/hoge/~
-cd examples
-python demo.py
+git clone https://github.com/shota-0129/Gmail_Extension.git
+cd Gmail_Extension
+yarn dev
+yarn build
 ```
+できたdistファイルを「パッケージ化されていない拡張機能を読み込む」から読み込み使用する。
+devは開発用なので、変更が随時反映される。
 
-# Note
-
-注意点などがあれば書く
 
 # Author
 
-作成情報を列挙する
-
-* 作成者
-* 所属
-* E-mail
+* Shota Mizusaki
+* shota.mizusaki.01@gmail.com
 
 ## License
 
