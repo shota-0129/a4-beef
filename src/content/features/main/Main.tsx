@@ -11,7 +11,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { BiMailSend } from '@react-icons/all-files/bi/BiMailSend';
 
-import { bucket } from '../../../myBucket';
+import { bucket, MailOption, MyBucket } from '../../../myBucket';
 import { newMail } from '../../../newMail';
 
 // import { AiOutlineMail } from 'react-icons/ai';
@@ -25,15 +25,15 @@ export function Main() {
   });
 
   const handleTextChange = async (event: any) => {
-    setTexts({ ...texts, sendText: event.target.value });
-    await bucket.set({ targetSendText: event.target.value });
+    const text = event.target.value;
+    setTexts({ ...texts, sendText: text });
   };
 
   const handleSend = async () => {
     setTexts({ ...texts, useful: false });
     const mybucket = await bucket.get();
-    const apikey = mybucket.apiKey;
-    console.log(apikey);
+    const apikey = mybucket.mail.apikey;
+
     if (apikey === '' || apikey === undefined) {
       alert('PoPupからAPIKeyを入力してください');
       setTexts({ ...texts, useful: true });
@@ -53,7 +53,12 @@ export function Main() {
         body = returnText;
       }
 
-      await bucket.set({ targetReturnText: returnText });
+      const updatedMail: MailOption = {
+        ...mybucket.mail,
+        returntext: returnText,
+      };
+
+      await bucket.set({ mail: updatedMail });
       const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]')[1];
       setTexts({ ...texts, returnText: returnText, useful: true });
 
@@ -79,7 +84,7 @@ export function Main() {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography>Gmail GPT</Typography>
+          <Typography>メール作成アシスト powered by GPT-3.5</Typography>
           <BiMailSend />
         </AccordionSummary>
         <AccordionDetails>
@@ -94,7 +99,7 @@ export function Main() {
                 value={texts.sendText}
                 sx={{ my: 2 }}
                 size="sm"
-                placeholder="例：GmailGPTを作った神戸大学院の水崎くんに弊社への採用を見据えた面談のオファーをしたい。また、面談の希望日は6/1,6/3の午後で1時間想定であることを伝えたい"
+                placeholder="例：メール作成アシスト powered by GPT-3.5を作った神戸大学院の水崎くんに弊社への採用を見据えた面談のオファーをしたい。また、面談の希望日は6/1,6/3の午後で1時間想定であることを伝えたい"
               />
               <Stack direction="row" justifyContent="flex-end">
                 <Button
@@ -103,14 +108,18 @@ export function Main() {
                   disabled={!texts.useful}
                   endIcon={<Endicon is_connecting={!texts.useful} />}
                 >
-                  お願いGPT
+                  草案を作成
                 </Button>
               </Stack>
               <Typography component="div">
                 <Box sx={{ mt: 2 }} fontSize={12}>
                   感想・要望がある場合は
-                  <a href="https://forms.gle/NeQmnQbqZocNfPuB9">こちらのフォーム</a>
-                  から送ってもらえると嬉しいです。
+                  <a href="https://chrome.google.com/webstore/detail/gmail-gpt/dfddioocenioilenfdojcpccmojcaiij?hl=ja&authuser=0">
+                    こちらから
+                  </a>
+                  レビューを書いてもらえると嬉しいです！
+                  <br />
+                  もし使っていてよかったら、★5をお願いします🙇
                 </Box>
               </Typography>
             </Box>

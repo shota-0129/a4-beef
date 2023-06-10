@@ -23,7 +23,7 @@ export async function newMail(apikey: string, text: string) {
     console.log(returnText);
 
     if (returnText === undefined) {
-      alert('OpenAIのAPIへの接続に失敗しました。\nAPIKeyに間違いがないか確認してください。');
+      alert('文章を取得できませんでした。');
       return 'ERROR';
     }
 

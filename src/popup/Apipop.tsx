@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 
-import { bucket } from '../myBucket';
+import { bucket, MailOption } from '../myBucket';
 
 const Apipop = (): React.ReactElement => {
   const [apikeys, setApikey] = useState({
@@ -18,7 +18,7 @@ const Apipop = (): React.ReactElement => {
 
   const returnAPI = async () => {
     const mybucket = await bucket.get();
-    const apikey = mybucket.apiKey;
+    const apikey = mybucket.mail.apikey;
     if (apikey !== '' && apikey !== undefined) {
       return true;
     } else {
@@ -39,13 +39,23 @@ const Apipop = (): React.ReactElement => {
   };
 
   const saveAPIKEY = async () => {
-    await bucket.set({ apiKey: apikeys.api });
+    const mybucket = await bucket.get();
+    const mail: MailOption = {
+      ...mybucket.mail,
+      apikey: apikeys.api,
+    };
+    await bucket.set({ mail: mail });
     await setApikey({ ...apikeys, api: '' });
     await setApikey({ ...apikeys, judge: true });
   };
 
   const deleteAPIKEY = async () => {
-    await bucket.set({ apiKey: '' });
+    const mybucket = await bucket.get();
+    const mail: MailOption = {
+      ...mybucket.mail,
+      apikey: '',
+    };
+    await bucket.set({ mail: mail });
     setApikey({ ...apikeys, api: '' });
     await setApikey({ ...apikeys, judge: false });
   };
