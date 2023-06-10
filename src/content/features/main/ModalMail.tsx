@@ -31,7 +31,7 @@ export const ModalMail = (props: any) => {
     const connectGPT = async () => {
       console.log(props.requestText);
       const mybucket = await bucket.get();
-      const apikey = mybucket.apiKey.toString();
+      const apikey = mybucket.mail.apikey.toString();
       const text = await returnMail(apikey, props.requestText);
       setText(text);
     };

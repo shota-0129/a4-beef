@@ -2,9 +2,10 @@ import { ManifestV3Export } from '@crxjs/vite-plugin';
 
 const manifest: ManifestV3Export = {
   manifest_version: 3,
-  name: 'Gmail GPT',
-  description: 'Automate the creation of emails in gmail using GPT3.5',
-  version: '1.2.1',
+  name: 'メール作成アシスト powered by GPT-3.5',
+  description:
+    'GPT3.5を使って、Gmailの新規メール、返信メールを自動で作成する拡張機能です。(Automate the creation of emails in gmail using GPT3.5)',
+  version: '1.2.3',
   background: {
     service_worker: 'src/background/index.ts',
   },

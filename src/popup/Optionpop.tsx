@@ -25,9 +25,12 @@ const Optionpopup = (): React.ReactElement => {
       <Box sx={{ my: 2 }}>
         <div>製作者は、25卒で絶賛就活中です。</div>
         <div>
-          興味を持っていただけた方は、GmailGPTを使って、
-          <button onClick={() => copyTextToClipboard('nrxg129@gmail.com')} className={styles.url}>
-            nrxg129@gmail.com
+          興味を持っていただけた方は、メール作成アシスト powered by GPT-3.5を使って、
+          <button
+            onClick={() => copyTextToClipboard('shota.mizusaki.01@gmail.com')}
+            className={styles.url}
+          >
+            shota.mizusaki.01@gmail.com
           </button>
           （クリックでコピー）までご連絡ください！
         </div>
