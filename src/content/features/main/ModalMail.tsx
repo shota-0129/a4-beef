@@ -57,7 +57,7 @@ export const ModalMail = (props: any) => {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            返信例
+            返信草案
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             <Textarea

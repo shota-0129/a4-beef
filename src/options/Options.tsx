@@ -21,7 +21,7 @@ const Options = (): React.ReactElement => {
 
   const returnUserName = async () => {
     const mybucket = await bucket.get();
-    const name = mybucket.user.name;
+    const name = mybucket?.user?.name;
     if (name !== '' && name !== undefined) {
       return name;
     } else {
@@ -31,7 +31,7 @@ const Options = (): React.ReactElement => {
 
   const returnCompany = async () => {
     const mybucket = await bucket.get();
-    const company = mybucket.user.company;
+    const company = mybucket?.user?.company;
     if (company !== '' && company !== undefined) {
       return company;
     } else {
@@ -41,7 +41,7 @@ const Options = (): React.ReactElement => {
 
   const returnPosition = async () => {
     const mybucket = await bucket.get();
-    const position = mybucket.user.position;
+    const position = mybucket?.user?.position;
     if (position !== '' && position !== undefined) {
       return position;
     } else {
@@ -83,12 +83,19 @@ const Options = (): React.ReactElement => {
       position: users.position,
     };
     await bucket.set({ user: user });
+    alert('設定を保存しました');
   };
 
   const deleteUser = async () => {
-    await deleteUserName();
-    await deleteUserCompany();
-    await deleteUserPosition();
+    const mybucket = await bucket.get();
+    const user: UserInformation = {
+      ...mybucket.user,
+      name: '',
+      company: '',
+      position: '',
+    };
+    await bucket.set({ user: user });
+    setUser({ name: '', company: '', position: '' });
   };
 
   const deleteUserName = async () => {
@@ -123,52 +130,62 @@ const Options = (): React.ReactElement => {
 
   function displayUser() {
     return (
-      <Box sx={{ m: 2, width: 300 }}>
-        <Box sx={{ mt: 2 }}>メールに表示する名前を教えてください</Box>
-        <TextField
-          id="outlined-basic"
-          label="名前"
-          variant="outlined"
-          value={users.name}
-          onChange={handleUsernameChange}
-          sx={{ mt: 1, width: 300 }}
-          size="medium"
-        />
-        <Box sx={{ mt: 2 }}>表示する会社を教えてください</Box>
-        <TextField
-          id="outlined-basic"
-          label="会社"
-          variant="outlined"
-          value={users.company}
-          onChange={handleCompanyChange}
-          sx={{ mt: 1, width: 300 }}
-          size="medium"
-        />
-        <Box sx={{ mt: 2 }}>表示する役職を教えてください</Box>
-        <TextField
-          id="outlined-basic"
-          label="役職"
-          variant="outlined"
-          value={users.position}
-          onChange={handlePositionChange}
-          sx={{ mt: 1, width: 300 }}
-          size="medium"
-        />
-        <Stack direction="row" spacing={2} justifyContent="flex-end">
-          <Button variant="contained" onClick={saveUser} startIcon={<SaveIcon />} sx={{ mt: 2 }}>
-            保存
-          </Button>
-          <Button
-            variant="contained"
-            color="inherit"
-            onClick={deleteUser}
-            startIcon={<DeleteIcon />}
-            sx={{ mt: 2 }}
-          >
-            削除
-          </Button>
-        </Stack>
-      </Box>
+      <>
+        <Box sx={{ m: 2, fontSize: '32px' }}>任意設定：返信などの精度が上がります。</Box>
+        <Box sx={{ m: 2, width: 300, fontSize: '32px' }}>
+          <Box sx={{ mt: 2, fontSize: '16px' }}>メールに表示する名前を教えてください</Box>
+          <TextField
+            id="outlined-basic"
+            label="名前"
+            variant="outlined"
+            value={users.name}
+            onChange={handleUsernameChange}
+            sx={{ mt: 1, width: 300 }}
+            size="medium"
+          />
+          <Box sx={{ mt: 2, fontSize: '16px' }}>表示する会社を教えてください</Box>
+          <TextField
+            id="outlined-basic"
+            label="会社"
+            variant="outlined"
+            value={users.company}
+            onChange={handleCompanyChange}
+            sx={{ mt: 1, width: 300 }}
+            size="medium"
+          />
+          <Box sx={{ mt: 2, fontSize: '16px' }}>表示する役職を教えてください</Box>
+          <TextField
+            id="outlined-basic"
+            label="役職"
+            variant="outlined"
+            value={users.position}
+            onChange={handlePositionChange}
+            sx={{ mt: 1, width: 300 }}
+            size="medium"
+          />
+          <Stack direction="row" justifyContent="flex-end">
+            <Button
+              variant="contained"
+              onClick={saveUser}
+              startIcon={<SaveIcon />}
+              size="medium"
+              sx={{ mt: 2, mr: 2 }}
+            >
+              保存
+            </Button>
+            <Button
+              variant="contained"
+              color="inherit"
+              onClick={deleteUser}
+              startIcon={<DeleteIcon />}
+              size="medium"
+              sx={{ mt: 2 }}
+            >
+              削除
+            </Button>
+          </Stack>
+        </Box>
+      </>
     );
   }
   return <div>{displayUser()}</div>;
