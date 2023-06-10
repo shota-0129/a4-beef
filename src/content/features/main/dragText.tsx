@@ -74,12 +74,13 @@ export const ShowMail = () => {
           top: button.top,
           left: button.left,
           zIndex: 'modal',
+          padding: 0,
         }}
       >
         <Button
           variant="contained"
           onClick={handleClick}
-          size="small"
+          sx={{ padding: 0, fontSize: '12px' }}
           endIcon={<KeyboardReturnIcon />}
         >
           返信

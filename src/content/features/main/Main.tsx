@@ -32,35 +32,24 @@ export function Main() {
   const handleSend = async () => {
     setTexts({ ...texts, useful: false });
     const mybucket = await bucket.get();
-    const apikey = mybucket.mail.apikey;
+    const apikey = mybucket?.mail?.apikey;
 
     if (apikey === '' || apikey === undefined) {
       alert('PoPupからAPIKeyを入力してください');
       setTexts({ ...texts, useful: true });
     } else {
-      const returnText = await newMail(apikey, texts.sendText);
-      const regex = /件名:(.+?)<br><br>本文:(.+)/s;
-      const result = returnText.match(regex);
-      let subject;
-      let body;
+      const returnText: { subject?: string; body?: string } = await newMail(apikey, texts.sendText);
+      const subject = returnText.subject ?? '';
+      const body = returnText.body ?? '';
 
-      if (result) {
-        subject = result[1].trim(); // 件名を取得します。
-        body = result[2]; // 本文を取得します。
-        body.replace('<br>', '');
-      } else {
-        subject = '';
-        body = returnText;
-      }
+      // const updatedMail: MailOption = {
+      //   ...mybucket.mail,
+      //   returntext: returnText.body,
+      // };
 
-      const updatedMail: MailOption = {
-        ...mybucket.mail,
-        returntext: returnText,
-      };
-
-      await bucket.set({ mail: updatedMail });
+      // await bucket.set({ mail: updatedMail });
       const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]')[1];
-      setTexts({ ...texts, returnText: returnText, useful: true });
+      setTexts({ ...texts, returnText: body, useful: true });
 
       if (textelement != null) {
         const subjectbox = document.getElementsByName('subjectbox')[0] as HTMLInputElement;
