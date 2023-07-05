@@ -31,7 +31,7 @@ export async function returnMail(apikey: string, text: string) {
     const textForGPT =
       optiontext +
       text +
-      '\n\n上記の送られてきたメールに対して私からの返信を書きたいです。\n件名は書かず以下のフォーマットでメールを書いてください。\n\n本文:〇〇';
+      '\n\n上記の送られてきたメールに対して私からの返信を書きたいです。\n以下のJSON形式のフォーマットでメールを作成してください。\n{"subject": 返信メールの件名,"body": 返信メールの本文}';
     console.log(textForGPT);
 
     const completion = await openai.createChatCompletion({
@@ -39,18 +39,29 @@ export async function returnMail(apikey: string, text: string) {
       messages: [{ role: 'user', content: textForGPT }],
     });
 
-    const returnText = completion.data.choices[0].message?.content;
-
-    console.log(returnText);
-
-    if (returnText === undefined) {
+    if (completion.data.choices[0].message?.content === undefined) {
       alert('文章を取得できませんでした。');
-      return 'ERROR';
+      return { body: 'RETURN ERROR' };
     }
 
-    return returnText;
+    const returnTextJsonString: string = completion.data.choices[0].message?.content;
+
+    let returnText: { subject?: string; body?: string };
+
+    try {
+      returnText = JSON.parse(returnTextJsonString);
+    } catch (error) {
+      alert('JSON化に失敗しました。もう一度試してください');
+      returnText = { body: 'JSON ERROR' };
+    }
+
+    if (returnText.body === undefined) returnText.body = '';
+
+    returnText.body = returnText.body.replace(/\n/g, '<br>');
+
+    return { body: returnText.body };
   } catch (error) {
     alert('OpenAIのAPIへの接続に失敗しました。\nAPIKeyに間違いがないか確認してください。');
-    return 'ERROR';
+    return { body: 'APIKEY ERROR' };
   }
 }

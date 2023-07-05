@@ -143,20 +143,20 @@ const Options = (): React.ReactElement => {
             sx={{ mt: 1, width: 300 }}
             size="medium"
           />
-          <Box sx={{ mt: 2, fontSize: '16px' }}>表示する会社を教えてください</Box>
+          <Box sx={{ mt: 2, fontSize: '16px' }}>表示する会社/大学を教えてください</Box>
           <TextField
             id="outlined-basic"
-            label="会社"
+            label="〇〇株式会社/〇〇大学"
             variant="outlined"
             value={users.company}
             onChange={handleCompanyChange}
             sx={{ mt: 1, width: 300 }}
             size="medium"
           />
-          <Box sx={{ mt: 2, fontSize: '16px' }}>表示する役職を教えてください</Box>
+          <Box sx={{ mt: 2, fontSize: '16px' }}>表示する役職/学部を教えてください</Box>
           <TextField
             id="outlined-basic"
-            label="役職"
+            label="〇〇担当/〇〇学部"
             variant="outlined"
             value={users.position}
             onChange={handlePositionChange}

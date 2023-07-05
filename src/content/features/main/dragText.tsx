@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import SendIcon from '@mui/icons-material/Send';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
+import { bucket } from '../../../myBucket';
+import { returnMail } from '../../../returnMail';
+
+import ReturnEndicon from './Endicon_return';
 import ModalMail from './ModalMail';
 
 const style = {
@@ -24,15 +27,26 @@ export const ShowMail = () => {
     display: 'none',
     top: 0,
     left: 0,
+    useful: true,
   });
-  const [isModalOpen, setModalOpen] = useState(false);
+  // const [isModalOpen, setModalOpen] = useState(false);
 
-  const dragText = () => {
+  const dragText = async () => {
     const selectedText = window.getSelection();
     if (selectedText === null) {
-      setButton({ ...button, display: 'none' });
+      await setButton({ ...button, display: 'none' });
+      console.log('none');
       return;
     }
+    console.log(selectedText.isCollapsed);
+    console.log(selectedText.type);
+
+    if (selectedText.isCollapsed) {
+      await setButton({ ...button, display: 'none' });
+      console.log('none');
+      return;
+    }
+
     if (selectedText.toString()) {
       setText(selectedText.toString().trim());
 
@@ -43,14 +57,17 @@ export const ShowMail = () => {
         display: 'inline',
         top: rect.bottom * 1.01,
         left: rect.left,
+        useful: true,
       });
       // console.log(selectedText.toString())
       // console.log("inline")
     } else {
       // 選択が解除されたらボタンを削除
-      setButton({ ...button, display: 'none' });
-      // console.log("none")
+      await setButton({ ...button, display: 'none' });
+      console.log('none');
+      return;
     }
+    console.log(selectedText);
   };
 
   useEffect(() => {
@@ -60,8 +77,28 @@ export const ShowMail = () => {
     };
   }, []);
 
-  const handleClick = () => {
-    setModalOpen(!isModalOpen);
+  const handleSendClick = async () => {
+    setButton({ ...button, useful: false });
+    const mybucket = await bucket.get();
+    const apikey = mybucket?.mail?.apikey;
+
+    if (apikey === '' || apikey === undefined) {
+      alert('PoPupからAPIKeyを入力してください');
+    } else {
+      const returnText: { body?: string } = await returnMail(apikey, requestText);
+      const body = returnText.body ?? '';
+
+      const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]')[1];
+
+      if (textelement != null) {
+        textelement.insertAdjacentHTML('afterbegin', body);
+      } else {
+        alert(
+          'メッセージを直接代入できませんでした。\n既存の返信ボタンを押して、返信のところを開いた状態で、お待ちください'
+        );
+      }
+    }
+    setButton({ ...button, useful: true });
   };
 
   return (
@@ -79,14 +116,15 @@ export const ShowMail = () => {
       >
         <Button
           variant="contained"
-          onClick={handleClick}
+          onClick={handleSendClick}
           sx={{ padding: 0, fontSize: '12px' }}
-          endIcon={<KeyboardReturnIcon />}
+          disabled={!button.useful}
+          endIcon={<ReturnEndicon is_connecting={!button.useful} />}
         >
           返信
         </Button>
       </Box>
-      {isModalOpen && <ModalMail requestText={requestText} />}
+      {/* {isModalOpen && <ModalMail requestText={requestText} />} */}
     </>
   );
 };
