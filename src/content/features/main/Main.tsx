@@ -12,8 +12,8 @@ import Stack from '@mui/material/Stack';
 import { BiMailSend } from '@react-icons/all-files/bi/BiMailSend';
 
 import { bucket, MailOption, MyBucket } from '../../../myBucket';
-import { newMail } from '../../../newMail';
 
+import { newMail } from './mail/newMail';
 // import { AiOutlineMail } from 'react-icons/ai';
 import Endicon from './Endicon';
 
@@ -33,12 +33,17 @@ export function Main() {
     setTexts({ ...texts, useful: false });
     const mybucket = await bucket.get();
     const apikey = mybucket?.mail?.apikey;
+    const model = mybucket?.mail?.model ?? 'gpt-3.5-turbo';
 
     if (apikey === '' || apikey === undefined) {
       alert('PoPupからAPIKeyを入力してください');
       setTexts({ ...texts, useful: true });
     } else {
-      const returnText: { subject?: string; body?: string } = await newMail(apikey, texts.sendText);
+      const returnText: { subject?: string; body?: string } = await newMail(
+        apikey,
+        texts.sendText,
+        model
+      );
       const subject = returnText.subject ?? '';
       const body = returnText.body ?? '';
 

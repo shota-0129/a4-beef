@@ -9,7 +9,8 @@ import Typography from '@mui/material/Typography';
 import { truncate } from 'fs-extra';
 
 import { bucket } from '../../../myBucket';
-import { returnMail } from '../../../returnMail';
+
+import { returnMail } from './mail/returnMail';
 
 const style = {
   position: 'absolute' as const,
@@ -32,7 +33,7 @@ export const ModalMail = (props: any) => {
       console.log(props.requestText);
       const mybucket = await bucket.get();
       const apikey = mybucket.mail.apikey.toString();
-      const text = await returnMail(apikey, props.requestText);
+      // const text = await returnMail(apikey, props.requestText);
     };
     connectGPT();
   }, []);

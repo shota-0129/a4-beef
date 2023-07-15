@@ -1,8 +1,8 @@
 import { Configuration, OpenAIApi } from 'openai';
 
-import { bucket, UserInformation } from './myBucket';
+import { bucket, UserInformation } from '../../../../myBucket';
 
-export async function returnMail(apikey: string, text: string) {
+export async function returnMail(apikey: string, text: string, model: string) {
   try {
     const configuration = new Configuration({
       // organization:"org-asd",
@@ -12,16 +12,15 @@ export async function returnMail(apikey: string, text: string) {
     // delete configuration.baseOptions.headers['User-Agent'];
     const mybucket = await bucket.get();
     const userinfo: UserInformation = {
-      name: mybucket.user.name !== undefined ? mybucket.user.name : 'A',
-      email: mybucket.user.email !== undefined ? mybucket.user.email : '',
-      password: mybucket.user.password !== undefined ? mybucket.user.password : '',
-      company: mybucket.user.company !== undefined ? mybucket.user.company : '〇〇株式会社',
-      position: mybucket.user.position !== undefined ? mybucket.user.position : '〇〇担当',
+      name: mybucket.user?.name ?? 'A',
+      email: mybucket.user?.email ?? '',
+      password: mybucket.user?.password ?? '',
+      company: mybucket.user?.company ?? '',
+      position: mybucket.user?.position ?? '',
     };
     const optiontext: string =
       '私は' +
       userinfo.company +
-      'の' +
       userinfo.position +
       'の' +
       userinfo.name +
@@ -31,11 +30,12 @@ export async function returnMail(apikey: string, text: string) {
     const textForGPT =
       optiontext +
       text +
-      '\n\n上記の送られてきたメールに対して私からの返信を書きたいです。\n以下のJSON形式のフォーマットでメールを作成してください。\n{"subject": 返信メールの件名,"body": 返信メールの本文}';
+      '\n\n上記の送られてきたメールに対して私からの返信を書きたいです。\n\n以下のJSON形式のデータを作成してください。\n\n{"subject": 作成した返信メールの件名,"body": 作成した返信メールの本文}';
     console.log(textForGPT);
+    console.log(model);
 
     const completion = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
+      model: model,
       messages: [{ role: 'user', content: textForGPT }],
     });
 
@@ -51,6 +51,7 @@ export async function returnMail(apikey: string, text: string) {
     try {
       returnText = JSON.parse(returnTextJsonString);
     } catch (error) {
+      console.log(returnTextJsonString);
       alert('JSON化に失敗しました。もう一度試してください');
       returnText = { body: 'JSON ERROR' };
     }
@@ -61,7 +62,10 @@ export async function returnMail(apikey: string, text: string) {
 
     return { body: returnText.body };
   } catch (error) {
-    alert('OpenAIのAPIへの接続に失敗しました。\nAPIKeyに間違いがないか確認してください。');
+    console.log(error);
+    alert(
+      'OpenAIのAPIへの接続に失敗しました。\nAPIKeyの有効期限が切れている可能性があります。右上の拡張機能のアイコンから使い方を確認してください'
+    );
     return { body: 'APIKEY ERROR' };
   }
 }
