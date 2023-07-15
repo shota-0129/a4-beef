@@ -12,6 +12,7 @@ export interface MailOption {
   sendtext: string;
   returntext: string;
   apikey: string;
+  model: string;
 }
 
 export interface MyBucket {

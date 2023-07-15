@@ -1,8 +1,8 @@
 import { Configuration, OpenAIApi } from 'openai';
 
-import { bucket, UserInformation } from './myBucket';
+import { bucket, UserInformation } from '../../../../myBucket';
 
-export async function newMail(apikey: string, text: string) {
+export async function newCaleder(apikey: string, text: string) {
   try {
     const configuration = new Configuration({
       // organization:"org-asd",
@@ -11,21 +11,10 @@ export async function newMail(apikey: string, text: string) {
 
     // delete configuration.baseOptions.headers['User-Agent'];
     const mybucket = await bucket.get();
-    const userinfo: UserInformation = {
-      name: mybucket.user.name !== undefined ? mybucket.user.name : 'A',
-      email: mybucket.user.email !== undefined ? mybucket.user.email : '',
-      password: mybucket.user.password !== undefined ? mybucket.user.password : '',
-      company: mybucket.user.company !== undefined ? mybucket.user.company : '〇〇株式会社',
-      position: mybucket.user.position !== undefined ? mybucket.user.position : '〇〇担当',
-    };
-    const optiontext: string =
-      '私は' + userinfo.company + userinfo.position + userinfo.name + 'です。\n';
-
     const openai = new OpenAIApi(configuration);
     const textForGPT =
-      optiontext +
       text +
-      '\n以下のJSON形式のフォーマットでメールを作成してください。\n{"subject": メールの件名, "body": メールの本文}';
+      '\n以下のJSON形式のフォーマットでカレンダーの予定を作成してください。\n{"text": カレンダーの予定, "body": メールの本文}';
     console.log(textForGPT);
     const completion = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
@@ -54,6 +43,7 @@ export async function newMail(apikey: string, text: string) {
 
     return returnText;
   } catch (error) {
+    console.log(error);
     alert('OpenAIのAPIへの接続に失敗しました。\nAPIKeyに間違いがないか確認してください。');
     return { subject: '', body: 'APIKEY ERROR' };
   }
