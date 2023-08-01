@@ -27,9 +27,9 @@ const Popup = (): React.ReactElement => {
   /**
    * 従量課金モードとAPIキーモードの切り替え
    */
-  const handleChangeMode = () => {
+  const handleChangeMode = async () => {
     setIsChargeMode(!isChargeMode);
-    handleIsChargeMode(!isChargeMode);
+    await handleIsChargeMode(!isChargeMode);
   };
 
   return (
