@@ -8,7 +8,7 @@ const Optionpopup = (): React.ReactElement => {
     navigator.clipboard.writeText(text);
   };
   return (
-    <Box sx={{ m: 2 }} fontSize={12}>
+    <Box fontSize={12}>
       <div>追加いただきありがとうございます！</div>
       <div>
         ※使い方は
@@ -22,7 +22,7 @@ const Optionpopup = (): React.ReactElement => {
         </a>
         をご覧ください。
       </div>
-      <Box sx={{ my: 2 }}>
+      <Box>
         <div>製作者は、25卒で絶賛就活中です。</div>
         <div>
           興味を持っていただけた方は、メール作成アシスト powered by GPT-3.5を使って、
