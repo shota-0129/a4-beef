@@ -93,44 +93,44 @@ const Apipop = (): React.ReactElement => {
   };
 
   function judgeAPI() {
-    if (apikeys.judge) {
-      return (
-        <>
-          <div>APIKEYが保存されています</div>
-          <Button
-            sx={{ m: 2 }}
-            variant="contained"
-            onClick={deleteAPIKEY}
-            startIcon={<DeleteIcon />}
-          >
-            APIを削除
-          </Button>
-        </>
-      );
-    } else {
-      return (
-        <>
-          <Box sx={{ mt: 2 }}>APIKeyを貼り付けてください</Box>
-          <TextField
-            id="outlined-basic"
-            label="APIKEY"
-            variant="outlined"
-            value={apikeys.api}
-            onChange={handleAPIChange}
-            sx={{ m: 1, width: 200 }}
-          />
-          <Stack direction="row" spacing={2} justifyContent="flex-end">
-            <Button variant="contained" onClick={saveAPIKEY} startIcon={<SaveIcon />}>
-              保存
+    return (
+      <Box sx={{ height: '150px' }}>
+        {apikeys.judge ? (
+          <>
+            <div>APIKEYが保存されています</div>
+            <Button
+              sx={{ m: 2 }}
+              variant="contained"
+              onClick={deleteAPIKEY}
+              startIcon={<DeleteIcon />}
+            >
+              APIを削除
             </Button>
-          </Stack>
-        </>
-      );
-    }
+          </>
+        ) : (
+          <>
+            <Box>APIKeyを貼り付けてください</Box>
+            <TextField
+              id="outlined-basic"
+              label="APIKEY"
+              variant="outlined"
+              value={apikeys.api}
+              onChange={handleAPIChange}
+              sx={{ m: 1, width: 200 }}
+            />
+            <Stack direction="row" spacing={2} justifyContent="flex-end">
+              <Button variant="contained" onClick={saveAPIKEY} startIcon={<SaveIcon />}>
+                保存
+              </Button>
+            </Stack>
+          </>
+        )}
+      </Box>
+    );
   }
 
   return (
-    <Box sx={{ m: 2, width: 200 }}>
+    <Box>
       {judgeAPI()}
       {/* <FormControl component="fieldset">
         <FormLabel component="legend">Model</FormLabel>

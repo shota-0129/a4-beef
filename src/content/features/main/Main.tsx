@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -11,13 +11,22 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { BiMailSend } from '@react-icons/all-files/bi/BiMailSend';
 
+import { isChargeModeFn } from '../../../isChargeModeBucket';
 import { bucket, MailOption, MyBucket } from '../../../myBucket';
 
+import { isChargeModeNewMail } from './mail/isChargeModeNewMail';
 import { newMail } from './mail/newMail';
+import { convertErrorMessage } from './convertErrorMessage';
 // import { AiOutlineMail } from 'react-icons/ai';
 import Endicon from './Endicon';
 
+export type MailType = {
+  subject?: string;
+  body?: string;
+};
+
 export function Main() {
+  const { getIsChargeMode } = isChargeModeFn();
   const [texts, setTexts] = useState({
     sendText: '',
     returnText: '',
@@ -32,18 +41,23 @@ export function Main() {
   const handleSend = async () => {
     setTexts({ ...texts, useful: false });
     const mybucket = await bucket.get();
-    const apikey = mybucket?.mail?.apikey;
+    const isChargeMode = await getIsChargeMode();
+    const apikey = isChargeMode ? '' : mybucket?.mail?.apikey;
     const model = mybucket?.mail?.model ?? 'gpt-3.5-turbo';
 
-    if (apikey === '' || apikey === undefined) {
+    if ((apikey === '' || apikey === undefined) && !isChargeMode) {
       alert('PoPupからAPIKeyを入力してください');
       setTexts({ ...texts, useful: true });
     } else {
-      const returnText: { subject?: string; body?: string } = await newMail(
-        apikey,
-        texts.sendText,
-        model
-      );
+      const returnText: string | MailType = isChargeMode
+        ? await isChargeModeNewMail({ reqText: texts.sendText, model: model })
+        : await newMail(apikey, texts.sendText, model);
+
+      if (typeof returnText === 'string') {
+        alert(convertErrorMessage(returnText));
+        setTexts({ ...texts, useful: true });
+        return;
+      }
       const subject = returnText.subject ?? '';
       const body = returnText.body ?? '';
 
