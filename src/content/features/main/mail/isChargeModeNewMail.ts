@@ -49,6 +49,6 @@ export const isChargeModeNewMail = async ({ reqText, model }: Props): Promise<Re
     return data;
   } catch (e) {
     console.log(e);
-    return 'GPTError';
+    return 'APIError';
   }
 };
