@@ -11,7 +11,7 @@ type IsChargeModeObjType = {
 
 type IsChargeModeFnType = {
   getIsChargeMode: () => Promise<boolean>;
-  handleIsChargeMode: (modeBoolean: boolean) => void;
+  handleIsChargeMode: (modeBoolean: boolean) => Promise<void>;
 };
 
 /**
@@ -22,7 +22,7 @@ type IsChargeModeFnType = {
  * @returns boolean
  */
 const isChargeModeTypeObjToBool = (modeObj: IsChargeModeObjType): boolean => {
-  return Boolean(modeObj.mode);
+  return modeObj.mode === 'true';
 };
 
 /**
@@ -63,8 +63,8 @@ export const isChargeModeFn = (): IsChargeModeFnType => {
    *
    * @param modeBoolean 課金mode true: 従量課金mode false: APIキーmode
    */
-  const handleIsChargeMode = (modeBoolean: boolean) => {
-    isChargeModeBucket.set(isChargeModeTypeStrToObj(modeBoolean));
+  const handleIsChargeMode = async (modeBoolean: boolean) => {
+    await isChargeModeBucket.set(isChargeModeTypeStrToObj(modeBoolean));
   };
 
   return {
