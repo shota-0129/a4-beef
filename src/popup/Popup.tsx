@@ -34,7 +34,7 @@ const Popup = (): React.ReactElement => {
 
   return (
     <Stack spacing={1} sx={{ width: '250px', height: '450px', p: 3 }}>
-      <Box sx={{ height: '150px' }}> {isChargeMode ? <ChargeModeHeader /> : <Apipop />}</Box>
+      <Box sx={{ height: '150px' }}> {isChargeMode ? <Apipop /> : <ChargeModeHeader />}</Box>
       <Optionpopup />
       <ChargeModeSwitch isCheck={isChargeMode} handleChange={handleChangeMode} />
     </Stack>
