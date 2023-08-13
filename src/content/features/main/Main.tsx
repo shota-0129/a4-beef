@@ -45,12 +45,6 @@ export function Main() {
     const apikey = isChargeMode ? mybucket?.mail?.apikey : '';
     const model = mybucket?.mail?.model ?? 'gpt-3.5-turbo';
 
-    if ((apikey === '' || apikey === undefined) && isChargeMode) {
-      alert('PoPupからAPIKeyを入力してください');
-      setTexts({ ...texts, useful: true });
-      return;
-    }
-
     const returnText: string | MailType = isChargeMode
       ? await newMail(apikey, texts.sendText, model)
       : await isChargeModeNewMail({ reqText: texts.sendText, model: model });
@@ -74,7 +68,7 @@ export function Main() {
       }
       textelement.insertAdjacentHTML('afterbegin', body);
     } else {
-      alert(convertErrorMessage('import'));
+      alert(convertErrorMessage('ImportERROR'));
       return;
     }
 

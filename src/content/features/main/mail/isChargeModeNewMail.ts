@@ -13,6 +13,8 @@ type ReturnType = string | MailType;
 export const isChargeModeNewMail = async ({ reqText, model }: Props): Promise<ReturnType> => {
   const myBucket = await bucket.get();
 
+  if (myBucket.mail.freeTier < 1) return 'NofreeTier';
+
   const userinfo: UserInformation = {
     name: myBucket.user?.name ?? 'A',
     email: myBucket.user?.email ?? '',

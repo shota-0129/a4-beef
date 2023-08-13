@@ -6,6 +6,8 @@ import { MailType } from '../Main';
 
 export async function newMail(apikey: string, text: string, model: string) {
   try {
+    if (apikey === '' || apikey === undefined) return 'APIKEYUndifed';
+
     const configuration = new Configuration({
       // organization:"org-asd",
       apiKey: apikey,
@@ -37,10 +39,7 @@ export async function newMail(apikey: string, text: string, model: string) {
       messages: [{ role: 'user', content: textForGPT }],
     });
 
-    if (completion.data.choices[0].message?.content === undefined) {
-      alert('文章を取得できませんでした。');
-      return { subject: '', body: 'RETURN ERROR' };
-    }
+    if (completion.data.choices[0].message?.content === undefined) return 'RETURNERROR';
 
     const returnTextJsonString: string = completion.data.choices[0].message?.content;
 
@@ -50,8 +49,7 @@ export async function newMail(apikey: string, text: string, model: string) {
       returnText = JSON.parse(returnTextJsonString);
     } catch (error) {
       console.log(returnTextJsonString);
-      alert('JSON化に失敗しました。もう一度試してください');
-      returnText = { subject: '', body: 'JSON ERROR' };
+      return 'JSONERROR';
     }
 
     if (returnText.body === undefined) returnText.body = '';
@@ -60,10 +58,6 @@ export async function newMail(apikey: string, text: string, model: string) {
 
     return returnText;
   } catch (error) {
-    console.log(error);
-    alert(
-      'OpenAIのAPIへの接続に失敗しました。\nAPIKeyの有効期限が切れている可能性があります。右上の拡張機能のアイコンから使い方を確認してください'
-    );
-    return { subject: '', body: 'APIKEY ERROR' };
+    return 'APIKEY_OPENAI';
   }
 }
