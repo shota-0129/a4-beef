@@ -13,11 +13,13 @@ export interface MailOption {
   returntext: string;
   apikey: string;
   model: string;
+  freeTier: number;
 }
 
 export interface MyBucket {
   user: UserInformation;
   mail: MailOption;
+  updated: Date;
 }
 
 export const bucket = getBucket<MyBucket>('my_bucket', 'sync');
