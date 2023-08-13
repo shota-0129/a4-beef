@@ -1,6 +1,7 @@
 import { Configuration, OpenAIApi } from 'openai';
 
 import { bucket, UserInformation } from '../../../../myBucket';
+import { MailType } from '../Main';
 
 export async function returnMail(apikey: string, text: string, model: string) {
   try {
@@ -46,7 +47,7 @@ export async function returnMail(apikey: string, text: string, model: string) {
 
     const returnTextJsonString: string = completion.data.choices[0].message?.content;
 
-    let returnText: { subject?: string; body?: string };
+    let returnText: MailType;
 
     try {
       returnText = JSON.parse(returnTextJsonString);
