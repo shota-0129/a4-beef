@@ -86,12 +86,6 @@ export const ShowMail = () => {
     const apikey = isChargeMode ? mybucket?.mail?.apikey : '';
     const model = mybucket?.mail?.model ?? 'gpt-3.5-turbo';
 
-    if ((apikey === '' || apikey === undefined) && isChargeMode) {
-      alert('PoPupからAPIKeyを入力してください');
-      setUseful(true);
-      return;
-    }
-
     const returnText: string | MailType = isChargeMode
       ? await returnMail(apikey, requestText, model)
       : await isChargeModeReturnMail({ reqText: requestText, model: model });
@@ -109,7 +103,7 @@ export const ShowMail = () => {
     if (textelement != null) {
       textelement.insertAdjacentHTML('afterbegin', body);
     } else {
-      alert(convertErrorMessage('import'));
+      alert(convertErrorMessage('ImportERROR'));
       setUseful(true);
       return;
     }
