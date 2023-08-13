@@ -26,7 +26,7 @@ export const isChargeModeNewMail = async ({ reqText, model }: Props): Promise<Re
   const textForGPT =
     optionText +
     reqText +
-    '\n上記の新規メールを考えて欲しいです。\n以下のJSON形式のデータを作成してください。。\n\n{"subject": メールの件名, "body": メールの本文}';
+    '\n\n上記の送られてきたメールに対して私からの返信を書きたいです。\n\n以下のJSON形式のデータを作成してください。\n\n{"subject": 作成した返信メールの件名,"body": 作成した返信メールの本文}';
 
   /**
    * GPTのAPIを呼び出すためのAPI
@@ -50,7 +50,7 @@ export const isChargeModeNewMail = async ({ reqText, model }: Props): Promise<Re
 
     data.body = data.body.replace(/\n/g, '<br>');
 
-    return data;
+    return { body: data.body };
   } catch (e) {
     console.log(e);
     return 'APIError';
