@@ -42,16 +42,16 @@ export function Main() {
     setTexts({ ...texts, useful: false });
     const mybucket = await bucket.get();
     const isChargeMode = await getIsChargeMode();
-    const apikey = isChargeMode ? '' : mybucket?.mail?.apikey;
+    const apikey = isChargeMode ? mybucket?.mail?.apikey : '';
     const model = mybucket?.mail?.model ?? 'gpt-3.5-turbo';
 
-    if ((apikey === '' || apikey === undefined) && !isChargeMode) {
+    if ((apikey === '' || apikey === undefined) && isChargeMode) {
       alert('PoPupからAPIKeyを入力してください');
       setTexts({ ...texts, useful: true });
     } else {
       const returnText: string | MailType = isChargeMode
-        ? await isChargeModeNewMail({ reqText: texts.sendText, model: model })
-        : await newMail(apikey, texts.sendText, model);
+        ? await newMail(apikey, texts.sendText, model)
+        : await isChargeModeNewMail({ reqText: texts.sendText, model: model });
 
       if (typeof returnText === 'string') {
         alert(convertErrorMessage(returnText));
@@ -61,12 +61,6 @@ export function Main() {
       const subject = returnText.subject ?? '';
       const body = returnText.body ?? '';
 
-      // const updatedMail: MailOption = {
-      //   ...mybucket.mail,
-      //   returntext: returnText.body,
-      // };
-
-      // await bucket.set({ mail: updatedMail });
       const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]')[1];
       setTexts({ ...texts, returnText: body, useful: true });
 
