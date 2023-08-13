@@ -71,9 +71,7 @@ export function Main() {
         }
         textelement.insertAdjacentHTML('afterbegin', body);
       } else {
-        alert(
-          'メッセージを直接代入できませんでした。\n作成ボタンを押して、新しいメッセージを開いた状態で、お待ちください'
-        );
+        alert(convertErrorMessage('import'));
       }
     }
   };
