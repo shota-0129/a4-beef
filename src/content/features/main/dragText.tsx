@@ -3,10 +3,14 @@ import SendIcon from '@mui/icons-material/Send';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
+import { isChargeModeFn } from '../../../isChargeModeBucket';
 import { bucket } from '../../../myBucket';
 
+import { isChargeModeReturnMail } from './mail/isChargeModeReturnMail';
 import { returnMail } from './mail/returnMail';
+import { convertErrorMessage } from './convertErrorMessage';
 import ReturnEndicon from './Endicon_return';
+import { MailType } from './Main';
 import ModalMail from './ModalMail';
 
 const style = {
@@ -73,16 +77,28 @@ export const ShowMail = () => {
     };
   }, []);
 
+  const { getIsChargeMode } = isChargeModeFn();
+
   const handleSendClick = async () => {
     setUseful(false);
     const mybucket = await bucket.get();
-    const apikey = mybucket?.mail?.apikey;
+    const isChargeMode = await getIsChargeMode();
+    const apikey = isChargeMode ? mybucket?.mail?.apikey : '';
     const model = mybucket?.mail?.model ?? 'gpt-3.5-turbo';
 
-    if (apikey === '' || apikey === undefined) {
+    if ((apikey === '' || apikey === undefined) && isChargeMode) {
       alert('PoPupからAPIKeyを入力してください');
     } else {
-      const returnText: { body?: string } = await returnMail(apikey, requestText, model);
+      const returnText: string | MailType = isChargeMode
+        ? await returnMail(apikey, requestText, model)
+        : await isChargeModeReturnMail({ reqText: requestText, model: model });
+
+      if (typeof returnText === 'string') {
+        alert(convertErrorMessage(returnText));
+        setUseful(true);
+        return;
+      }
+
       const body = returnText.body ?? '';
 
       const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]')[1];
@@ -90,9 +106,7 @@ export const ShowMail = () => {
       if (textelement != null) {
         textelement.insertAdjacentHTML('afterbegin', body);
       } else {
-        alert(
-          'メッセージを直接代入できませんでした。\n既存の返信ボタンを押して、返信のところを開いた状態で、お待ちください'
-        );
+        alert(convertErrorMessage('import'));
       }
     }
     setUseful(true);

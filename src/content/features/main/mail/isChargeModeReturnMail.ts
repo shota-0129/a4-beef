@@ -10,7 +10,7 @@ type Props = {
 
 type ReturnType = string | MailType;
 
-export const isChargeModeNewMail = async ({ reqText, model }: Props): Promise<ReturnType> => {
+export const isChargeModeReturnMail = async ({ reqText, model }: Props): Promise<ReturnType> => {
   const myBucket = await bucket.get();
 
   const userinfo: UserInformation = {
