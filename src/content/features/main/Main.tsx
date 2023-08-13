@@ -48,31 +48,42 @@ export function Main() {
     if ((apikey === '' || apikey === undefined) && isChargeMode) {
       alert('PoPupからAPIKeyを入力してください');
       setTexts({ ...texts, useful: true });
+      return;
+    }
+
+    const returnText: string | MailType = isChargeMode
+      ? await newMail(apikey, texts.sendText, model)
+      : await isChargeModeNewMail({ reqText: texts.sendText, model: model });
+
+    if (typeof returnText === 'string') {
+      alert(convertErrorMessage(returnText));
+      setTexts({ ...texts, useful: true });
+      return;
+    }
+
+    const subject = returnText.subject ?? '';
+    const body = returnText.body ?? '';
+
+    const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]')[1];
+    setTexts({ ...texts, returnText: body, useful: true });
+
+    if (textelement != null) {
+      const subjectbox = document.getElementsByName('subjectbox')[0] as HTMLInputElement;
+      if (subjectbox) {
+        subjectbox.value = subject;
+      }
+      textelement.insertAdjacentHTML('afterbegin', body);
     } else {
-      const returnText: string | MailType = isChargeMode
-        ? await newMail(apikey, texts.sendText, model)
-        : await isChargeModeNewMail({ reqText: texts.sendText, model: model });
+      alert(convertErrorMessage('import'));
+      return;
+    }
 
-      if (typeof returnText === 'string') {
-        alert(convertErrorMessage(returnText));
-        setTexts({ ...texts, useful: true });
-        return;
-      }
-      const subject = returnText.subject ?? '';
-      const body = returnText.body ?? '';
-
-      const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]')[1];
-      setTexts({ ...texts, returnText: body, useful: true });
-
-      if (textelement != null) {
-        const subjectbox = document.getElementsByName('subjectbox')[0] as HTMLInputElement;
-        if (subjectbox) {
-          subjectbox.value = subject;
-        }
-        textelement.insertAdjacentHTML('afterbegin', body);
-      } else {
-        alert(convertErrorMessage('import'));
-      }
+    if (!isChargeMode) {
+      const mail: MailOption = {
+        ...mybucket.mail,
+        freeTier: mybucket.mail.freeTier - 1,
+      };
+      await bucket.set({ mail: mail });
     }
   };
 

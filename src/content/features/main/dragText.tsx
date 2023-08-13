@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
 import { isChargeModeFn } from '../../../isChargeModeBucket';
-import { bucket } from '../../../myBucket';
+import { bucket, MailOption } from '../../../myBucket';
 
 import { isChargeModeReturnMail } from './mail/isChargeModeReturnMail';
 import { returnMail } from './mail/returnMail';
@@ -88,27 +88,40 @@ export const ShowMail = () => {
 
     if ((apikey === '' || apikey === undefined) && isChargeMode) {
       alert('PoPupからAPIKeyを入力してください');
-    } else {
-      const returnText: string | MailType = isChargeMode
-        ? await returnMail(apikey, requestText, model)
-        : await isChargeModeReturnMail({ reqText: requestText, model: model });
-
-      if (typeof returnText === 'string') {
-        alert(convertErrorMessage(returnText));
-        setUseful(true);
-        return;
-      }
-
-      const body = returnText.body ?? '';
-
-      const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]')[1];
-
-      if (textelement != null) {
-        textelement.insertAdjacentHTML('afterbegin', body);
-      } else {
-        alert(convertErrorMessage('import'));
-      }
+      setUseful(true);
+      return;
     }
+
+    const returnText: string | MailType = isChargeMode
+      ? await returnMail(apikey, requestText, model)
+      : await isChargeModeReturnMail({ reqText: requestText, model: model });
+
+    if (typeof returnText === 'string') {
+      alert(convertErrorMessage(returnText));
+      setUseful(true);
+      return;
+    }
+
+    const body = returnText.body ?? '';
+
+    const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]')[1];
+
+    if (textelement != null) {
+      textelement.insertAdjacentHTML('afterbegin', body);
+    } else {
+      alert(convertErrorMessage('import'));
+      setUseful(true);
+      return;
+    }
+
+    if (!isChargeMode) {
+      const mail: MailOption = {
+        ...mybucket.mail,
+        freeTier: mybucket.mail.freeTier - 1,
+      };
+      await bucket.set({ mail: mail });
+    }
+
     setUseful(true);
   };
 
