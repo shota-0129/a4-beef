@@ -4,7 +4,7 @@ import { Configuration, OpenAIApi } from 'openai';
 import { bucket, UserInformation } from '../../../../myBucket';
 import { MailType } from '../Main';
 
-export async function newMail(apikey: string, text: string, model: string) {
+export async function newMail(apikey: string, text: string, language: string, model: string) {
   try {
     if (apikey === '' || apikey === undefined) return 'APIKEYUndifed';
 
@@ -24,15 +24,16 @@ export async function newMail(apikey: string, text: string, model: string) {
     };
 
     const optiontext: string =
-      '私は' + userinfo.company + userinfo.position + userinfo.name + 'です。\n';
+      "I'm " + userinfo.name + 'in' + userinfo.position + 'of' + userinfo.company + '.\n';
 
     const openai = new OpenAIApi(configuration);
     const textForGPT =
       optiontext +
       text +
-      '\n上記の新規メールを考えて欲しいです。\n以下のJSON形式のデータを作成してください。。\n\n{"subject": メールの件名, "body": メールの本文}';
+      '\nI want you to write the email written above.\nFollow these settings.Output must be JSON data & keys for JSON data must be in lowercase and only be subject and body.\n\nLanguage: ' +
+      language +
+      '\nOutput: {"subject": subject of mail, "body": body of mail}';
     console.log(textForGPT);
-    console.log(model);
 
     const completion = await openai.createChatCompletion({
       model: model,

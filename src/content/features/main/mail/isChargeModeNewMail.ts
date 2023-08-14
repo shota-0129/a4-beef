@@ -5,12 +5,17 @@ import { MailType } from '../Main';
 
 type Props = {
   reqText: string;
+  language: string;
   model: string;
 };
 
 type ReturnType = string | MailType;
 
-export const isChargeModeNewMail = async ({ reqText, model }: Props): Promise<ReturnType> => {
+export const isChargeModeNewMail = async ({
+  reqText,
+  language,
+  model,
+}: Props): Promise<ReturnType> => {
   const myBucket = await bucket.get();
 
   if (myBucket.mail.freeTier < 1) return 'NofreeTier';
@@ -23,13 +28,17 @@ export const isChargeModeNewMail = async ({ reqText, model }: Props): Promise<Re
     position: myBucket.user?.position ?? '',
   };
 
-  const optionText = '私は' + userinfo.company + userinfo.position + userinfo.name + 'です。\n';
+  const optionText =
+    "I'm " + userinfo.name + 'in' + userinfo.position + 'of' + userinfo.company + '.\n';
 
   const textForGPT =
     optionText +
     reqText +
-    '\n上記の新規メールを考えて欲しいです。\n以下のJSON形式のデータを作成してください。。\n\n{"subject": メールの件名, "body": メールの本文}';
+    '\nI want you to write the email written above.\nFollow these settings.Output must be JSON data, keys for JSON data must be in lowercase and only be subject and body.\n\nLanguage: ' +
+    language +
+    '\nOutput: {"subject": subject of email, "body": body of email}';
 
+  console.log(textForGPT);
   /**
    * GPTのAPIを呼び出すためのAPI
    *
@@ -42,7 +51,9 @@ export const isChargeModeNewMail = async ({ reqText, model }: Props): Promise<Re
     const res: AxiosResponse<ReturnType> = await axios.get(
       `https://callgpt-kyamxpe3gq-uc.a.run.app?reqText=${textForGPT}&modelType=${model}`
     );
+
     const data = res.data;
+    console.log(data);
 
     if (typeof data === 'string') {
       return data;
