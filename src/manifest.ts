@@ -14,6 +14,14 @@ const manifest: ManifestV3Export = {
       matches: ['https://mail.google.com/*'],
       js: ['src/content/index.tsx'],
     },
+    {
+      matches: ['https://outlook.live.com/mail/*'],
+      js: ['src/content_outlook/index.tsx'],
+    },
+    {
+      matches: ['https://outlook.office.com/mail/*'],
+      js: ['src/content_outlook/index.tsx'],
+    },
   ],
   host_permissions: ['<all_urls>'],
   options_ui: {
