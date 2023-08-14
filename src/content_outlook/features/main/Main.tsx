@@ -122,11 +122,11 @@ export function Main() {
               />
               <Stack direction="row" justifyContent="flex-end">
                 <Box sx={{ mr: 2 }}>
-                  <FormControl variant="standard" sx={{ minWidth: 120 }}>
-                    <InputLabel id="demo-simple-select-standard-label">Output Language</InputLabel>
+                  <FormControl sx={{ minWidth: 150 }} size="small">
+                    <InputLabel id="demo-select-small-label">Output Language</InputLabel>
                     <Select
-                      labelId="demo-simple-select-standard-label"
-                      id="demo-simple-select-standard"
+                      labelId="demo-select-small-label"
+                      id="demo-select-small"
                       value={texts.language}
                       label="Output Language"
                       onChange={handleLanguageChange}
