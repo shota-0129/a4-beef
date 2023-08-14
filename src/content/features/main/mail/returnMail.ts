@@ -24,9 +24,9 @@ export async function returnMail(apikey: string, text: string, model: string) {
     const optiontext: string =
       "I'm " +
       userinfo.name +
-      'in' +
+      ' in ' +
       userinfo.position +
-      'of' +
+      ' of ' +
       userinfo.company +
       '.\n\nThe following email was sent.\n';
 

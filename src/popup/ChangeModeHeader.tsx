@@ -12,14 +12,14 @@ export const ChargeModeHeader: FC = () => {
   const [freeTier, setfreeTier] = useState(0);
 
   /**
-   * modeState初期化
+   * 無料枠の取得
    */
   useEffect(() => {
-    const fetchMode = async () => {
+    const getFreeTier = async () => {
       const mybucket = await bucket.get();
       setfreeTier(mybucket.mail.freeTier);
     };
-    fetchMode();
+    getFreeTier();
   }, []);
 
   return (

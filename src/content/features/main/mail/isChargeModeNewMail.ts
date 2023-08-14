@@ -29,7 +29,7 @@ export const isChargeModeNewMail = async ({
   };
 
   const optionText =
-    "I'm " + userinfo.name + 'in' + userinfo.position + 'of' + userinfo.company + '.\n';
+    "I'm " + userinfo.name + ' in ' + userinfo.position + ' of ' + userinfo.company + '.\n';
 
   const textForGPT =
     optionText +

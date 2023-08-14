@@ -24,7 +24,7 @@ export async function newMail(apikey: string, text: string, language: string, mo
     };
 
     const optiontext: string =
-      "I'm " + userinfo.name + 'in' + userinfo.position + 'of' + userinfo.company + '.\n';
+      "I'm " + userinfo.name + ' in ' + userinfo.position + ' of ' + userinfo.company + '.\n';
 
     const openai = new OpenAIApi(configuration);
     const textForGPT =
