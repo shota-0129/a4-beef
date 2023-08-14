@@ -78,3 +78,8 @@
   opacity: 1;
   transition: 0s;
 }
+
+.url {
+  text-decoration: underline;
+  color: mediumblue;
+}

@@ -8,8 +8,13 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Textarea from '@mui/joy/Textarea';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import { BiMailSend } from '@react-icons/all-files/bi/BiMailSend';
+import { language } from 'googleapis/build/src/apis/language';
 
 import { isChargeModeFn } from '../../../isChargeModeBucket';
 import { bucket, MailOption, MyBucket } from '../../../myBucket';
@@ -19,6 +24,8 @@ import { newMail } from './mail/newMail';
 import { convertErrorMessage } from './convertErrorMessage';
 // import { AiOutlineMail } from 'react-icons/ai';
 import Endicon from './Endicon';
+
+import styles from './Main.module.css';
 
 export type MailType = {
   subject?: string;
@@ -31,11 +38,29 @@ export function Main() {
     sendText: '',
     returnText: '',
     useful: true,
+    language: 'Japanese',
   });
+  const [freeTier, setfreeTier] = useState(0);
+
+  /**
+   * 無料枠の取得
+   */
+  useEffect(() => {
+    const getFreeTier = async () => {
+      const mybucket = await bucket.get();
+      setfreeTier(mybucket.mail.freeTier);
+      if (mybucket.mail.language) setTexts({ ...texts, language: mybucket.mail.language });
+    };
+    getFreeTier();
+  }, []);
 
   const handleTextChange = async (event: any) => {
     const text = event.target.value;
     setTexts({ ...texts, sendText: text });
+  };
+
+  const handleLanguageChange = (event: SelectChangeEvent) => {
+    setTexts({ ...texts, language: event.target.value as string });
   };
 
   const handleSend = async () => {
@@ -46,8 +71,12 @@ export function Main() {
     const model = mybucket?.mail?.model ?? 'gpt-3.5-turbo';
 
     const returnText: string | MailType = isChargeMode
-      ? await newMail(apikey, texts.sendText, model)
-      : await isChargeModeNewMail({ reqText: texts.sendText, model: model });
+      ? await newMail(apikey, texts.sendText, texts.language, model)
+      : await isChargeModeNewMail({
+          reqText: texts.sendText,
+          language: texts.language,
+          model: model,
+        }); //language: texts.language
 
     if (typeof returnText === 'string') {
       alert(convertErrorMessage(returnText));
@@ -76,8 +105,10 @@ export function Main() {
       const mail: MailOption = {
         ...mybucket.mail,
         freeTier: mybucket.mail.freeTier - 1,
+        language: texts.language,
       };
       await bucket.set({ mail: mail });
+      setfreeTier(mybucket.mail.freeTier - 1);
     }
   };
 
@@ -94,39 +125,77 @@ export function Main() {
         </AccordionSummary>
         <AccordionDetails>
           <div>
-            <Box sx={{ m: 2, width: 300 }}>
-              以下にどんなメールを書きたいか打ち込んでください
+            <Box sx={{ mx: 2, width: 300 }}>
+              <Typography variant="body2">どんなメールを書きたいか打ち込んでください</Typography>
               <Textarea
                 color="primary"
                 minRows={5}
                 maxRows={5}
                 onChange={handleTextChange}
                 value={texts.sendText}
-                sx={{ my: 2 }}
+                sx={{ mt: 2 }}
                 size="sm"
                 placeholder="例：メール作成アシスト powered by GPT-3.5を作った神戸大学院の水崎くんに弊社への採用を見据えた面談のオファーをしたい。また、面談の希望日は6/1,6/3の午後で1時間想定であることを伝えたい"
               />
               <Stack direction="row" justifyContent="flex-end">
+                <Box sx={{ m: 1 }}>
+                  <Typography>無料枠：残り{freeTier}通</Typography>
+                </Box>
+              </Stack>
+              <Stack direction="row" alignItems="center" justifyContent="flex-end">
+                <Box>
+                  <FormControl sx={{ minWidth: '120px', fontSize: '12px', mr: 2 }} size="small">
+                    <InputLabel id="demo-select-small-label">Output Language</InputLabel>
+                    <Select
+                      labelId="demo-select-small-label"
+                      id="demo-select-small"
+                      value={texts.language}
+                      label="Output Language"
+                      onChange={handleLanguageChange}
+                    >
+                      <MenuItem value={'Arabic'}>Arabic</MenuItem>
+                      <MenuItem value={'Chinese'}>Chinese</MenuItem>
+                      <MenuItem value={'English'}>English</MenuItem>
+                      <MenuItem value={'French'}>French</MenuItem>
+                      <MenuItem value={'German'}>German</MenuItem>
+                      <MenuItem value={'Italian'}>Italian</MenuItem>
+                      <MenuItem value={'Japanese'}>Japanese</MenuItem>
+                      <MenuItem value={'Korean'}>Korean</MenuItem>
+                      <MenuItem value={'Russian'}>Russian</MenuItem>
+                      <MenuItem value={'Spanish'}>Spanish</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
                 <Button
                   variant="contained"
                   onClick={handleSend}
+                  sx={{ padding: 1, fontSize: '12px' }}
                   disabled={!texts.useful}
                   endIcon={<Endicon is_connecting={!texts.useful} />}
                 >
-                  草案を作成
+                  メールを作成
                 </Button>
               </Stack>
-              <Typography component="div">
-                <Box sx={{ mt: 2 }} fontSize={12}>
-                  感想・要望がある場合は
-                  <a href="https://chrome.google.com/webstore/detail/gmail-gpt/dfddioocenioilenfdojcpccmojcaiij?hl=ja&authuser=0">
-                    こちらから
-                  </a>
-                  レビューを書いてもらえると嬉しいです！
-                  <br />
-                  もし使っていてよかったら、★5をお願いします🙇
-                </Box>
-              </Typography>
+              <Stack justifyContent="flex-end">
+                <Typography component="div">
+                  <Box fontSize={12}>
+                    <br />
+                    ※使い方は
+                    <a href="https://drive.google.com/file/d/1j35RQQj6CO7hf-RTnms5dV5c-oSVhJdn/view?usp=sharing">
+                      こちら
+                    </a>
+                    をご覧ください。
+                    <br />
+                    感想・要望がある場合は
+                    <a href="https://chrome.google.com/webstore/detail/gmail-gpt/dfddioocenioilenfdojcpccmojcaiij?hl=ja&authuser=0">
+                      こちらから
+                    </a>
+                    レビューを書いてもらえると嬉しいです！
+                    <br />
+                    もし使っていてよかったら、★5をお願いします🙇
+                  </Box>
+                </Typography>
+              </Stack>
             </Box>
           </div>
         </AccordionDetails>

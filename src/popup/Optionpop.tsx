@@ -9,19 +9,6 @@ const Optionpopup = (): React.ReactElement => {
   };
   return (
     <Box fontSize={12}>
-      <div>追加いただきありがとうございます！</div>
-      <div>
-        ※使い方は
-        <a
-          target="_blank"
-          href="https://drive.google.com/file/d/1j35RQQj6CO7hf-RTnms5dV5c-oSVhJdn/view?usp=sharing"
-          className={styles.url}
-          rel="noreferrer"
-        >
-          こちら
-        </a>
-        をご覧ください。
-      </div>
       <Box>
         <div>製作者は、25卒で絶賛就活中です。</div>
         <div>
