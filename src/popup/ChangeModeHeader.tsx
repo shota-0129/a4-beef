@@ -24,17 +24,17 @@ export const ChargeModeHeader: FC = () => {
 
   return (
     <>
-      <Box>無料お試しモード使用中</Box>
+      <Box>Free Trial mode</Box>
       <Stack alignItems="flex-center" justifyContent="center" spacing={1} sx={{ mt: 2 }}>
         <Box>
-          <Box sx={{ mb: 1 }}>無料枠</Box>
-          <Typography>残り{freeTier}通</Typography>
+          <Box sx={{ mb: 1 }}>Free Tier</Box>
+          <Typography>{freeTier} emails</Typography>
         </Box>
         <Box>
           {/* disabled startIcon={<SettingsIcon />} */}
-          <Box sx={{ mb: 1 }}>個人設定</Box>
+          <Box sx={{ mb: 1 }}>Personal settings</Box>
           <Button variant="contained" size="small" onClick={handleSettingsClick}>
-            個人設定を開く
+            Open
           </Button>
         </Box>
       </Stack>

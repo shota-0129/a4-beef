@@ -96,9 +96,7 @@ export const ShowMail = () => {
 
     const body = returnText.body ?? '';
 
-    const textelement = document.querySelector(
-      '[aria-label="メッセージ本文、Alt+F10を押して終了します"]'
-    );
+    const textelement = document.querySelectorAll('[role="textbox"]')[0];
 
     if (textelement != null) {
       textelement.insertAdjacentHTML('afterbegin', body);
@@ -139,7 +137,7 @@ export const ShowMail = () => {
           disabled={!isUseful}
           endIcon={<ReturnEndicon is_connecting={!isUseful} />}
         >
-          返信
+          Reply
         </Button>
       </Box>
       {/* {isModalOpen && <ModalMail requestText={requestText} />} */}

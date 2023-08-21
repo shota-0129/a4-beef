@@ -11,7 +11,7 @@ export const ChargeModeSwitch: FC<Props> = ({ isCheck, handleChange }) => {
     <Box>
       <FormControl>
         <FormLabel focused={isCheck} sx={{ fontSize: '12px' }}>
-          課金モード
+          Billing mode
         </FormLabel>
         <FormControlLabel
           control={<Switch checked={isCheck} onChange={handleChange} name="chargeModeSwitch" />}

@@ -1,10 +1,5 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormLabel from '@material-ui/core/FormLabel';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import SendIcon from '@mui/icons-material/Send';
@@ -97,19 +92,19 @@ const Apipop = (): React.ReactElement => {
       <Box sx={{ height: '150px' }}>
         {apikeys.judge ? (
           <>
-            <div>APIKEYが保存されています</div>
+            <div>The API key has been saved.</div>
             <Button
               sx={{ m: 2 }}
               variant="contained"
               onClick={deleteAPIKEY}
               startIcon={<DeleteIcon />}
             >
-              APIを削除
+              Delete API
             </Button>
           </>
         ) : (
           <>
-            <Box>APIKeyを貼り付けてください</Box>
+            <Box>Please paste the API key.</Box>
             <TextField
               id="outlined-basic"
               label="APIKEY"
@@ -120,7 +115,7 @@ const Apipop = (): React.ReactElement => {
             />
             <Stack direction="row" spacing={2} justifyContent="flex-end">
               <Button variant="contained" onClick={saveAPIKEY} startIcon={<SaveIcon />}>
-                保存
+                Save
               </Button>
             </Stack>
           </>
@@ -131,16 +126,8 @@ const Apipop = (): React.ReactElement => {
 
   return (
     <Box>
-      <Box sx={{ mb: 1 }}>課金モード使用中</Box>
+      <Box sx={{ mb: 1 }}>Billing mode.</Box>
       {judgeAPI()}
-      {/* <FormControl component="fieldset">
-        <FormLabel component="legend">Model</FormLabel>
-        <RadioGroup aria-label="model" name="model1" value={model} onChange={handleModelChange}>
-          <FormControlLabel value="gpt-3.5-turbo" control={<Radio color="primary" size='small'/>} label="GPT-3.5-turbo" checked={!model.judge} />
-          <FormControlLabel value="gpt-4" control={<Radio color="primary" size='small'/>} label="GPT-4" checked=
-          {model.judge} />
-        </RadioGroup>
-      </FormControl> */}
     </Box>
   );
 };

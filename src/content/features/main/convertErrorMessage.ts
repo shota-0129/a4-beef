@@ -7,30 +7,30 @@
 export const convertErrorMessage = (errorText: string): string => {
   switch (errorText) {
     case 'NoApiKey':
-      return 'サーバーでエラーが発生しました。\n 管理者までご連絡下さい';
+      return 'An error has occurred on the server.\nPlease contact the administrator for assistance.';
     case 'NoRequestText':
-      return '入力欄が空です。';
+      return 'The input field is empty.';
     case 'NoModelType':
-      return 'サーバーでエラーが発生しました。\n  管理者までご連絡下さい';
+      return 'An error has occurred on the server.\nPlease contact the administrator for assistance.';
     case 'GPTError':
-      return 'ChatGPTでエラーが発生しました。\n もう一度お試し下さい';
+      return 'An error has occurred with ChatGPT.\nPlease try again.';
     case 'JSONParseError':
-      return 'ChatGPTでエラーが発生しました。\n もう一度お試し下さい';
+      return 'An error has occurred with ChatGPT.\nPlease try again.';
     case 'APIError':
-      return 'サーバーでエラーが発生しました。\n しばらく時間をおいてからもう一度お試しください。';
+      return 'An error has occurred on the server.\nPlease wait for a while and try again.';
     case 'NofreeTier':
-      return '無料枠を使い切りました。\n課金モードに切り替えてください。';
+      return 'You have exhausted the free usage limit.\nPlease switch to the billing mode.';
     case 'APIKEYUndifed':
-      return 'PoPupからAPIKeyを入力してください';
+      return 'Please input the APIKey from the popup.';
     case 'RETURNERROR':
-      return '文章を取得できませんでした。';
+      return 'Failed to fetch the text.';
     case 'JSONERROR':
-      return '編集に失敗しました。\n もう一度お試しください。';
+      return 'Editing failed.\nPlease try again.';
     case 'APIKEY_OPENAI':
-      return 'OpenAIのAPIへの接続に失敗しました。\nAPIKeyの有効期限が切れている可能性があります。右上の拡張機能のアイコンから使い方を確認してください。';
+      return 'Failed to connect to the OpenAI API.\nThe APIKey might have expired. Please check the usage instructions from the icon in the upper-right corner.';
     case 'ImportERROR':
-      return 'メッセージを直接代入できませんでした。\n作成ボタンを押して、新しいメッセージを開いた状態で、お待ちください';
+      return 'Direct assignment of the message was not possible.\nPress the create button, open a new message, and wait.';
     default:
-      return '不明なエラーが発生しました。\n しばらく時間をおいてからもう一度お試しください。';
+      return 'An unknown error has occurred.\nPlease wait for a while and try again.';
   }
 };

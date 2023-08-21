@@ -87,7 +87,7 @@ export function Main() {
     const subject = returnText.subject ?? '';
     const body = returnText.body ?? '';
 
-    const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]')[1];
+    const textelement = document.querySelectorAll('[role="textbox"]')[0];
     setTexts({ ...texts, returnText: body, useful: true });
 
     if (textelement != null) {
@@ -120,13 +120,15 @@ export function Main() {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography>メール作成アシスト powered by GPT-3.5</Typography>
+          <Typography>MailCompose Assist powered by GPT-3.5</Typography>
           <BiMailSend />
         </AccordionSummary>
         <AccordionDetails>
           <div>
             <Box sx={{ mx: 2, width: 300 }}>
-              <Typography variant="body2">どんなメールを書きたいか打ち込んでください</Typography>
+              <Typography variant="body2">
+                Please type what kind of email you would like to write.
+              </Typography>
               <Textarea
                 color="primary"
                 minRows={5}
@@ -135,16 +137,16 @@ export function Main() {
                 value={texts.sendText}
                 sx={{ mt: 2 }}
                 size="sm"
-                placeholder="例：メール作成アシスト powered by GPT-3.5を作った神戸大学院の水崎くんに弊社への採用を見据えた面談のオファーをしたい。また、面談の希望日は6/1,6/3の午後で1時間想定であることを伝えたい"
+                placeholder="Example：I would like to send a gratitude email to Mr. Mizusaki from Kobe University Graduate School, who developed MailCompose Assist powered by GPT-3.5."
               />
               <Stack direction="row" justifyContent="flex-end">
                 <Box sx={{ m: 1 }}>
-                  <Typography>無料枠：残り{freeTier}通</Typography>
+                  <Typography>Free Tier：{freeTier} emails</Typography>
                 </Box>
               </Stack>
               <Stack direction="row" alignItems="center" justifyContent="flex-end">
                 <Box>
-                  <FormControl sx={{ minWidth: '120px', fontSize: '12px', mr: 2 }} size="small">
+                  <FormControl sx={{ minWidth: '120px', fontSize: '16px', mr: 2 }} size="small">
                     <InputLabel id="demo-select-small-label">Output Language</InputLabel>
                     <Select
                       labelId="demo-select-small-label"
@@ -173,26 +175,25 @@ export function Main() {
                   disabled={!texts.useful}
                   endIcon={<Endicon is_connecting={!texts.useful} />}
                 >
-                  メールを作成
+                  Compose !
                 </Button>
               </Stack>
               <Stack justifyContent="flex-end">
                 <Typography component="div">
                   <Box fontSize={12}>
                     <br />
-                    ※使い方は
+                    ※For detailed instructions, please click .
                     <a href="https://drive.google.com/file/d/1j35RQQj6CO7hf-RTnms5dV5c-oSVhJdn/view?usp=sharing">
-                      こちら
+                      this
                     </a>
-                    をご覧ください。
                     <br />
-                    感想・要望がある場合は
+                    If you have any comments or requests, we would be happy to have you write a
+                    review
                     <a href="https://chrome.google.com/webstore/detail/gmail-gpt/dfddioocenioilenfdojcpccmojcaiij?hl=ja&authuser=0">
-                      こちらから
+                      here!
                     </a>
-                    レビューを書いてもらえると嬉しいです！
                     <br />
-                    もし使っていてよかったら、★5をお願いします🙇
+                    If you like using it, please give me ★5 🙇
                   </Box>
                 </Typography>
               </Stack>
