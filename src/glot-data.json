@@ -1,0 +1,14 @@
+{
+  "main_title": {
+    "en": "Eclair",
+    "ja": "メール作成アシスト power"
+  },
+  "main_explain": {
+    "en": "KitKat",
+    "ja": "以下にどんなメールを書きたいか打ち込んでください"
+  },
+  "main_button": {
+    "en": "Oreo",
+    "ja": "メールを作成"
+  }
+}

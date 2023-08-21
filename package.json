@@ -39,6 +39,7 @@
     "@reduxjs/toolkit": "1.8.4",
     "axios": "1.3.6",
     "bootstrap": "5.2.3",
+    "glottologist": "2.0.3",
     "googleapis": "118.0.0",
     "openai": "3.2.1",
     "react": "18.2.0",
@@ -97,7 +98,7 @@
     "tailwindcss": "3.1.8",
     "ts-jest": "28.0.7",
     "typescript": "4.7.4",
-    "vite": "2.9.14"
+    "vite": "2.9.16"
   },
   "config": {
     "commitizen": {
