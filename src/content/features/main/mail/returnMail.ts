@@ -22,18 +22,20 @@ export async function returnMail(apikey: string, text: string, model: string) {
       position: mybucket.user?.position ?? '',
     };
     const optiontext: string =
-      '私は' +
-      userinfo.company +
-      userinfo.position +
-      'の' +
+      "I'm " +
       userinfo.name +
-      'です。\n\n以下のメールが送られてきました。\n';
+      ' in ' +
+      userinfo.position +
+      ' of ' +
+      userinfo.company +
+      '.\n\nThe following email was sent.\n';
 
     const openai = new OpenAIApi(configuration);
     const textForGPT =
       optiontext +
       text +
-      '\n\n上記の送られてきたメールに対して私からの返信を書きたいです。\n\n以下のJSON形式のデータを作成してください。\n\n{"subject": 作成した返信メールの件名,"body": 作成した返信メールの本文}';
+      '\nI want you to write a reply to the above email.\nFollow these settings.Output must be JSON data and in the same language as the email to which you are replying, keys for JSON data must be in lowercase and only be subject and body.\n\nOutput: {"subject": subject of email, "body": body of email}';
+
     console.log(textForGPT);
     console.log(model);
 

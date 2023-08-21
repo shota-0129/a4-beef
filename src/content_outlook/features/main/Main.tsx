@@ -14,18 +14,13 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import { BiMailSend } from '@react-icons/all-files/bi/BiMailSend';
-import { language } from 'googleapis/build/src/apis/language';
 
+import { convertErrorMessage } from '../../../content/features/main/convertErrorMessage';
+import Endicon from '../../../content/features/main/Endicon';
+import { isChargeModeNewMail } from '../../../content/features/main/mail/isChargeModeNewMail';
+import { newMail } from '../../../content/features/main/mail/newMail';
 import { isChargeModeFn } from '../../../isChargeModeBucket';
 import { bucket, MailOption, MyBucket } from '../../../myBucket';
-
-import { isChargeModeNewMail } from './mail/isChargeModeNewMail';
-import { newMail } from './mail/newMail';
-import { convertErrorMessage } from './convertErrorMessage';
-// import { AiOutlineMail } from 'react-icons/ai';
-import Endicon from './Endicon';
-
-import styles from './Main.module.css';
 
 export type MailType = {
   subject?: string;
@@ -76,7 +71,7 @@ export function Main() {
           reqText: texts.sendText,
           language: texts.language,
           model: model,
-        }); //language: texts.language
+        });
 
     if (typeof returnText === 'string') {
       alert(convertErrorMessage(returnText));
@@ -87,13 +82,20 @@ export function Main() {
     const subject = returnText.subject ?? '';
     const body = returnText.body ?? '';
 
-    const textelement = document.querySelectorAll('[aria-label="メッセージ本文"]')[1];
+    const subjectelement = document.querySelector('[aria-label="件名を追加"]') as HTMLInputElement;
+    const textelement = document.querySelector(
+      '[aria-label="メッセージ本文、Alt+F10を押して終了します"]'
+    );
     setTexts({ ...texts, returnText: body, useful: true });
 
     if (textelement != null) {
-      const subjectbox = document.getElementsByName('subjectbox')[0] as HTMLInputElement;
-      if (subjectbox) {
-        subjectbox.value = subject;
+      if (subjectelement) {
+        subjectelement.value = subject;
+        const inputEvent = new Event('input', {
+          bubbles: true,
+          cancelable: true,
+        });
+        subjectelement.dispatchEvent(inputEvent);
       }
       textelement.insertAdjacentHTML('afterbegin', body);
     } else {
@@ -105,7 +107,6 @@ export function Main() {
       const mail: MailOption = {
         ...mybucket.mail,
         freeTier: mybucket.mail.freeTier - 1,
-        language: texts.language,
       };
       await bucket.set({ mail: mail });
       setfreeTier(mybucket.mail.freeTier - 1);

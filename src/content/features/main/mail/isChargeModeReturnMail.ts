@@ -22,12 +22,13 @@ export const isChargeModeReturnMail = async ({ reqText, model }: Props): Promise
     position: myBucket.user?.position ?? '',
   };
 
-  const optionText = '私は' + userinfo.company + userinfo.position + userinfo.name + 'です。\n';
+  const optionText =
+    "I'm " + userinfo.name + ' in ' + userinfo.position + ' of ' + userinfo.company + '.\n';
 
   const textForGPT =
     optionText +
     reqText +
-    '\n\n上記の送られてきたメールに対して私からの返信を書きたいです。\n\n以下のJSON形式のデータを作成してください。\n\n{"subject": 作成した返信メールの件名,"body": 作成した返信メールの本文}';
+    '\nI want you to write a reply to the above email.\nFollow these settings.Output must be JSON data and in the same language as the email to which you are replying, keys for JSON data must be in lowercase and only be subject and body.\n\nOutput: {"subject": subject of email, "body": body of email}';
 
   /**
    * GPTのAPIを呼び出すためのAPI

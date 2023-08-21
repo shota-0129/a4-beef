@@ -14,6 +14,7 @@ export interface MailOption {
   apikey: string;
   model: string;
   freeTier: number;
+  language: string;
 }
 
 export interface MyBucket {

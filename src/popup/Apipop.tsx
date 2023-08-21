@@ -131,6 +131,7 @@ const Apipop = (): React.ReactElement => {
 
   return (
     <Box>
+      <Box sx={{ mb: 1 }}>課金モード使用中</Box>
       {judgeAPI()}
       {/* <FormControl component="fieldset">
         <FormLabel component="legend">Model</FormLabel>

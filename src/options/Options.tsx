@@ -130,64 +130,66 @@ const Options = (): React.ReactElement => {
 
   function displayUser() {
     return (
-      <>
-        <Box sx={{ m: 2, fontSize: '32px' }}>任意設定：返信などの精度が上がります。</Box>
-        <Box sx={{ m: 2, width: 300, fontSize: '32px' }}>
-          <Box sx={{ mt: 2, fontSize: '16px' }}>メールに表示する名前を教えてください</Box>
-          <TextField
-            id="outlined-basic"
-            label="名前"
-            variant="outlined"
-            value={users.name}
-            onChange={handleUsernameChange}
-            sx={{ mt: 1, width: 300 }}
-            size="medium"
-          />
-          <Box sx={{ mt: 2, fontSize: '16px' }}>表示する会社/大学を教えてください</Box>
-          <TextField
-            id="outlined-basic"
-            label="〇〇株式会社/〇〇大学"
-            variant="outlined"
-            value={users.company}
-            onChange={handleCompanyChange}
-            sx={{ mt: 1, width: 300 }}
-            size="medium"
-          />
-          <Box sx={{ mt: 2, fontSize: '16px' }}>表示する役職/学部を教えてください</Box>
-          <TextField
-            id="outlined-basic"
-            label="〇〇担当/〇〇学部"
-            variant="outlined"
-            value={users.position}
-            onChange={handlePositionChange}
-            sx={{ mt: 1, width: 300 }}
-            size="medium"
-          />
-          <Stack direction="row" justifyContent="flex-end">
-            <Button
-              variant="contained"
-              onClick={saveUser}
-              startIcon={<SaveIcon />}
-              size="medium"
-              sx={{ mt: 2, mr: 2 }}
-            >
-              保存
-            </Button>
-            <Button
-              variant="contained"
-              color="inherit"
-              onClick={deleteUser}
-              startIcon={<DeleteIcon />}
-              size="medium"
-              sx={{ mt: 2 }}
-            >
-              削除
-            </Button>
-          </Stack>
+      <Stack sx={{ width: '300px' }} justifyContent="center">
+        <Box sx={{ my: 2, fontSize: '20px' }}>
+          任意設定
+          <br />
+          返信などの精度が上がります。
         </Box>
-      </>
+        <Box sx={{ mt: 2, fontSize: '16px' }}>メールに表示する名前を教えてください</Box>
+        <TextField
+          id="outlined-basic"
+          label="名前"
+          variant="outlined"
+          value={users.name}
+          onChange={handleUsernameChange}
+          sx={{ mt: 1, width: 300 }}
+          size="medium"
+        />
+        <Box sx={{ mt: 2, fontSize: '16px' }}>表示する会社/大学を教えてください</Box>
+        <TextField
+          id="outlined-basic"
+          label="〇〇株式会社/〇〇大学"
+          variant="outlined"
+          value={users.company}
+          onChange={handleCompanyChange}
+          sx={{ mt: 1, width: 300 }}
+          size="medium"
+        />
+        <Box sx={{ mt: 2, fontSize: '16px' }}>表示する役職/学部を教えてください</Box>
+        <TextField
+          id="outlined-basic"
+          label="〇〇担当/〇〇学部"
+          variant="outlined"
+          value={users.position}
+          onChange={handlePositionChange}
+          sx={{ mt: 1, width: 300 }}
+          size="medium"
+        />
+        <Stack direction="row" justifyContent="center">
+          <Button
+            variant="contained"
+            onClick={saveUser}
+            startIcon={<SaveIcon />}
+            size="medium"
+            sx={{ mt: 2, mr: 2 }}
+          >
+            保存
+          </Button>
+          <Button
+            variant="contained"
+            color="inherit"
+            onClick={deleteUser}
+            startIcon={<DeleteIcon />}
+            size="medium"
+            sx={{ mt: 2 }}
+          >
+            削除
+          </Button>
+        </Stack>
+      </Stack>
     );
   }
-  return <div>{displayUser()}</div>;
+  return <div style={{ display: 'flex', justifyContent: 'center' }}>{displayUser()}</div>;
 };
 export default Options;
