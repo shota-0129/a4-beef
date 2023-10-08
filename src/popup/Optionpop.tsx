@@ -10,16 +10,19 @@ const Optionpopup = (): React.ReactElement => {
   return (
     <Box fontSize={12}>
       <Box>
-        <div>製作者は、25卒で絶賛就活中です。</div>
         <div>
-          興味を持っていただけた方は、メール作成アシスト powered by GPT-3.5を使って、
+          The creator is a recent graduate (Class of 25) and currently actively job hunting.
+        </div>
+        <div>
+          If you are interested, please use the Email Creation Assist powered by GPT-3.5 to reach
+          out to:
           <button
             onClick={() => copyTextToClipboard('shota.mizusaki.01@gmail.com')}
             className={styles.url}
           >
             shota.mizusaki.01@gmail.com
           </button>
-          （クリックでコピー）までご連絡ください！
+          (Click to copy).
         </div>
       </Box>
     </Box>

@@ -132,34 +132,36 @@ const Options = (): React.ReactElement => {
     return (
       <Stack sx={{ width: '300px' }} justifyContent="center">
         <Box sx={{ my: 2, fontSize: '20px' }}>
-          任意設定
+          Optional settings
           <br />
-          返信などの精度が上がります。
+          This improves the accuracy of replies, etc.
         </Box>
-        <Box sx={{ mt: 2, fontSize: '16px' }}>メールに表示する名前を教えてください</Box>
+        <Box sx={{ mt: 2, fontSize: '16px' }}>What name do you want to appear in the email?</Box>
         <TextField
           id="outlined-basic"
-          label="名前"
+          label="Name"
           variant="outlined"
           value={users.name}
           onChange={handleUsernameChange}
           sx={{ mt: 1, width: 300 }}
           size="medium"
         />
-        <Box sx={{ mt: 2, fontSize: '16px' }}>表示する会社/大学を教えてください</Box>
+        <Box sx={{ mt: 2, fontSize: '16px' }}>
+          Please tell us which company/university to display
+        </Box>
         <TextField
           id="outlined-basic"
-          label="〇〇株式会社/〇〇大学"
+          label="Company/University"
           variant="outlined"
           value={users.company}
           onChange={handleCompanyChange}
           sx={{ mt: 1, width: 300 }}
           size="medium"
         />
-        <Box sx={{ mt: 2, fontSize: '16px' }}>表示する役職/学部を教えてください</Box>
+        <Box sx={{ mt: 2, fontSize: '16px' }}>What position/faculty do you want to display?</Box>
         <TextField
           id="outlined-basic"
-          label="〇〇担当/〇〇学部"
+          label="Department of 〇〇 / 〇〇 Division"
           variant="outlined"
           value={users.position}
           onChange={handlePositionChange}
@@ -174,7 +176,7 @@ const Options = (): React.ReactElement => {
             size="medium"
             sx={{ mt: 2, mr: 2 }}
           >
-            保存
+            Save
           </Button>
           <Button
             variant="contained"
@@ -184,7 +186,7 @@ const Options = (): React.ReactElement => {
             size="medium"
             sx={{ mt: 2 }}
           >
-            削除
+            Delete
           </Button>
         </Stack>
       </Stack>
