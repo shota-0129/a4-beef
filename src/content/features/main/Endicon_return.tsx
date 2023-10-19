@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
-import SendIcon from '@mui/icons-material/Send';
 import CircularProgress from '@mui/material/CircularProgress';
 
 const ReturnEndicon = (props: { is_connecting: boolean }) => {

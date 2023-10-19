@@ -1,6 +1,5 @@
 import React, { ReactElement } from 'react';
 
-import ShowMail from './features/main/dragText';
 // import { Link } from '@mui/material';
 //import { Gmail_icon } from '../../public/images/Gmail_icon.png';
 // import Box from '@mui/material/Box';
@@ -22,7 +21,6 @@ const Content = (): ReactElement => {
       >
         <Main />
       </div>
-      <ShowMail />
     </>
   );
 };
