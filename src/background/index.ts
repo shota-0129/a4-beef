@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill';
 
 import store from '../app/store';
-import { bucket, MailOption } from '../myBucket';
+import { bucket } from '../myBucket';
 import { isDev } from '../shared/utils';
 
 store.subscribe(() => {

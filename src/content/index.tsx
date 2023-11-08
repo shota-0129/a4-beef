@@ -11,11 +11,15 @@ import Content from './Content';
 // `Content` コンポーネントはこの `Provider` の下でレンダリングされます。
 withProxyStore(<Content />, store).then((component) => {
   // コンテンツスクリプトのルート要素を作成します。
-  const container = document.createElement('my-extension-root');
-  document.body.append(container);
-
-  // createRoot を使用して `component` をレンダリングします。
-  createRoot(container).render(component);
+  // 既存の <div class="container clearfix"> 要素を取得
+  const existingFooter = document.querySelector('#func-page-footer');
+  if (existingFooter) {
+    // createRoot を使用して `component` をレンダリング
+    createRoot(existingFooter).render(component);
+  } else {
+    // エラーハンドリング: 要素が見つからない場合の処理
+    console.error('要素が見つかりませんでした');
+  }
 });
 
 // レンダリングするコンポーネントとプロキシストアを受け取り、プロキシストアが使用可能になるまで待機してから `Provider` を返す関数です。
