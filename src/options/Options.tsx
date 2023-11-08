@@ -2,193 +2,218 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { Box, Button, Container, InputAdornment, Stack, Typography } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 
-import { bucket, UserInformation } from '../myBucket';
+import Endicon from '../content/features/main/Endicon';
+import { bucket } from '../myBucket';
 
 const Options = (): React.ReactElement => {
-  const [users, setUser] = useState({
-    name: '',
-    company: '',
-    position: '',
-  });
+  const [userID, setUserID] = useState('');
+  const [password, setPassword] = useState('');
+  const [isConnecting, setConnecting] = useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
 
-  const returnUserName = async () => {
-    const mybucket = await bucket.get();
-    const name = mybucket?.user?.name;
-    if (name !== '' && name !== undefined) {
-      return name;
-    } else {
-      return '';
-    }
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
   };
 
-  const returnCompany = async () => {
-    const mybucket = await bucket.get();
-    const company = mybucket?.user?.company;
-    if (company !== '' && company !== undefined) {
-      return company;
-    } else {
-      return '';
-    }
-  };
-
-  const returnPosition = async () => {
-    const mybucket = await bucket.get();
-    const position = mybucket?.user?.position;
-    if (position !== '' && position !== undefined) {
-      return position;
-    } else {
-      return '';
-    }
-  };
-
+  // 画面がロードされたときに保存されたデータを読み込む
   useEffect(() => {
-    //ロードの1回だけ発動する
-    const fetchData = async () => {
-      const name = await returnUserName();
-      const company = await returnCompany();
-      const position = await returnPosition();
-      if (name !== '' || company !== '' || position !== '') {
-        await setUser({ ...users, name: name, company: company, position: position });
-      }
+    const setBucket = async () => {
+      const mybucket = await bucket.get();
+      setUserID(mybucket.userID);
+      setPassword(mybucket.password);
     };
-    fetchData();
+    setBucket();
+    console.log(userID, password);
   }, []);
 
-  const handleUsernameChange = async (event: any) => {
-    await setUser({ ...users, name: event.target.value });
+  const handleUserIDChange = (e: any) => {
+    setUserID(e.target.value);
   };
 
-  const handleCompanyChange = async (event: any) => {
-    await setUser({ ...users, company: event.target.value });
+  const handlePasswordChange = (e: any) => {
+    setPassword(e.target.value);
   };
 
-  const handlePositionChange = async (event: any) => {
-    await setUser({ ...users, position: event.target.value });
+  const handleSave = async () => {
+    try {
+      // リクエストボディにformDataを含めてAPIエンドポイントにPOSTリクエストを送信
+      const response = await fetch('YOUR_API_ENDPOINT_URL', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          '': userID,
+          '': password,
+        }),
+      });
+
+      if (response.ok) {
+        // 保存が成功した場合の処理
+        console.log('設定が保存されました。');
+        await bucket.set({ userID: userID, password: password });
+        alert('設定を保存しました');
+      } else {
+        // 保存が失敗した場合の処理
+        console.error('設定の保存に失敗しました。');
+      }
+    } catch (error) {
+      console.error('エラー:', error);
+    }
   };
 
-  const saveUser = async () => {
-    const mybucket = await bucket.get();
-    const user: UserInformation = {
-      ...mybucket.user,
-      name: users.name,
-      company: users.company,
-      position: users.position,
+  const handleDelete = async () => {
+    try {
+      // リクエストボディにformDataを含めてAPIエンドポイントにPOSTリクエストを送信
+      const response = await fetch('YOUR_API_ENDPOINT_URL', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        // 保存が成功した場合の処理
+        console.log('設定が削除されました。');
+        await bucket.set({ userID: '', password: '' });
+        setPassword('');
+        setUserID('');
+      } else {
+        // 保存が失敗した場合の処理
+        console.error('設定の削除に失敗しました。');
+      }
+    } catch (error) {
+      console.error('エラー:', error);
+    }
+  };
+
+  const handleRequest = async () => {
+    setConnecting(true);
+    const dataToSend = {
+      login_id: userID,
+      password: password,
     };
-    await bucket.set({ user: user });
-    alert('設定を保存しました');
+    // データをサーバーに送信
+    const response = await fetch(
+      'https://script.google.com/macros/s/AKfycbx2jImeliw_ZNlb2MaO7aSflcEtIzZ3ed6mV6RvawIbd5kxRXvoXG1q-ofdLQrJFZ8Wsw/exec',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
+      }
+    );
+
+    if (response.ok) {
+      // リクエスト成功
+      const responseData = await response.json();
+      // responseDataにGASからのレスポンスが格納される
+      console.log('Received response:', responseData);
+
+      // ここでresponseDataを必要に応じて処理する
+    } else {
+      // リクエスト失敗
+      console.error('Request failed:', response.status, response.statusText);
+    }
+    setConnecting(false);
   };
 
-  const deleteUser = async () => {
-    const mybucket = await bucket.get();
-    const user: UserInformation = {
-      ...mybucket.user,
-      name: '',
-      company: '',
-      position: '',
-    };
-    await bucket.set({ user: user });
-    setUser({ name: '', company: '', position: '' });
-  };
-
-  const deleteUserName = async () => {
-    const mybucket = await bucket.get();
-    const user: UserInformation = {
-      ...mybucket.user,
-      name: '',
-    };
-    await bucket.set({ user: user });
-    setUser({ ...users, name: '' });
-  };
-
-  const deleteUserCompany = async () => {
-    const mybucket = await bucket.get();
-    const user: UserInformation = {
-      ...mybucket.user,
-      name: '',
-    };
-    await bucket.set({ user: user });
-    setUser({ ...users, company: '' });
-  };
-
-  const deleteUserPosition = async () => {
-    const mybucket = await bucket.get();
-    const user: UserInformation = {
-      ...mybucket.user,
-      name: '',
-    };
-    await bucket.set({ user: user });
-    setUser({ ...users, position: '' });
-  };
-
-  function displayUser() {
-    return (
-      <Stack sx={{ width: '300px' }} justifyContent="center">
-        <Box sx={{ my: 2, fontSize: '20px' }}>
-          Optional settings
-          <br />
-          This improves the accuracy of replies, etc.
-        </Box>
-        <Box sx={{ mt: 2, fontSize: '16px' }}>What name do you want to appear in the email?</Box>
-        <TextField
-          id="outlined-basic"
-          label="Name"
-          variant="outlined"
-          value={users.name}
-          onChange={handleUsernameChange}
-          sx={{ mt: 1, width: 300 }}
-          size="medium"
-        />
-        <Box sx={{ mt: 2, fontSize: '16px' }}>
-          Please tell us which company/university to display
-        </Box>
-        <TextField
-          id="outlined-basic"
-          label="Company/University"
-          variant="outlined"
-          value={users.company}
-          onChange={handleCompanyChange}
-          sx={{ mt: 1, width: 300 }}
-          size="medium"
-        />
-        <Box sx={{ mt: 2, fontSize: '16px' }}>What position/faculty do you want to display?</Box>
-        <TextField
-          id="outlined-basic"
-          label="Department of 〇〇 / 〇〇 Division"
-          variant="outlined"
-          value={users.position}
-          onChange={handlePositionChange}
-          sx={{ mt: 1, width: 300 }}
-          size="medium"
-        />
-        <Stack direction="row" justifyContent="center">
-          <Button
+  return (
+    <Container maxWidth="lg">
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            padding: 3,
+            boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.1)',
+            borderRadius: '8px',
+          }}
+        >
+          <Typography variant="h5" gutterBottom>
+            初期設定
+          </Typography>
+          <TextField
+            fullWidth
+            id="outlined-basic"
+            label="UserID"
+            value={userID}
+            onChange={handleUserIDChange}
+            sx={{ mt: 1 }}
+          />
+          <TextField
+            fullWidth
+            id="outlined-basic"
+            label="Password"
+            value={password}
+            onChange={handlePasswordChange}
+            sx={{ mt: 1 }}
+            type={showPassword ? 'text' : 'password'}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Stack direction="row">
+            <Button
+              variant="contained"
+              onClick={handleSave}
+              endIcon={<SaveIcon />}
+              size="medium"
+              sx={{ mt: 2, mr: 2 }}
+            >
+              Save
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleDelete}
+              endIcon={<DeleteIcon />}
+              size="medium"
+              sx={{ mt: 2 }}
+            >
+              Delete
+            </Button>
+            {/* <Button
             variant="contained"
-            onClick={saveUser}
-            startIcon={<SaveIcon />}
+            onClick={handleRequest}
+            disabled={isConnecting}
             size="medium"
             sx={{ mt: 2, mr: 2 }}
+            endIcon={<Endicon is_connecting={isConnecting} />}
           >
-            Save
-          </Button>
-          <Button
-            variant="contained"
-            color="inherit"
-            onClick={deleteUser}
-            startIcon={<DeleteIcon />}
-            size="medium"
-            sx={{ mt: 2 }}
-          >
-            Delete
-          </Button>
-        </Stack>
-      </Stack>
-    );
-  }
-  return <div style={{ display: 'flex', justifyContent: 'center' }}>{displayUser()}</div>;
+            Request
+          </Button> */}
+          </Stack>
+        </Box>
+      </Box>
+    </Container>
+  );
 };
 export default Options;
