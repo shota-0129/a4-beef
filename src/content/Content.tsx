@@ -1,27 +1,17 @@
 import React, { ReactElement } from 'react';
+import Grid from '@mui/material/Grid';
 
-// import { Link } from '@mui/material';
-//import { Gmail_icon } from '../../public/images/Gmail_icon.png';
-// import Box from '@mui/material/Box';
-import { Main } from './features/main/Main';
+import Main from './features/main/Main';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Content = (): ReactElement => {
   return (
-    <>
-      <div
-        style={{
-          position: 'fixed',
-          zIndex: 999,
-          bottom: 0,
-          left: 0,
-          backgroundColor: 'rgb(255 255 255 / 100%)',
-        }}
-      >
+    <Grid container spacing={2}>
+      <Grid item xs={12} sm={6} md={4}>
         <Main />
-      </div>
-    </>
+      </Grid>
+    </Grid>
   );
 };
 
