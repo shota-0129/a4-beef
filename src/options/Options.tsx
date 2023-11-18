@@ -1,26 +1,36 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
-import DeleteIcon from '@mui/icons-material/Delete';
-import SaveIcon from '@mui/icons-material/Save';
-import SendIcon from '@mui/icons-material/Send';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { Box, Button, Container, InputAdornment, Stack, Typography } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
-import IconButton from '@mui/material/IconButton';
-import TextField from '@mui/material/TextField';
+import { Delete, Save, Send, Visibility, VisibilityOff } from '@mui/icons-material';
+import {
+  Alert,
+  AlertColor,
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  IconButton,
+  InputAdornment,
+  Snackbar,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 
 import { bucket } from '../myBucket';
 
 const Options = (): React.ReactElement => {
   const [login_id, setLoginID] = useState('');
   const [password, setPassword] = useState('');
+  const [isSaved, setSaved] = useState('');
   const [[saveConnecting, deleteConnecting, requestConnecting], setConnecting] = useState([
     false,
     false,
     false,
   ]);
   const [showPassword, setShowPassword] = React.useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor | undefined>('success'); // 'success' or 'error'
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -32,10 +42,9 @@ const Options = (): React.ReactElement => {
     const setBucket = async () => {
       const mybucket = await bucket.get();
       setLoginID(mybucket.login_id);
-      setPassword(mybucket.password);
+      setSaved(mybucket.login_id ? '登録済み' : '未登録');
     };
     setBucket();
-    console.log(login_id, password);
   }, []);
 
   const handleLoginIDChange = (e: any) => {
@@ -46,9 +55,28 @@ const Options = (): React.ReactElement => {
     setPassword(e.target.value);
   };
 
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  const isLoginIDPassword = () => {
+    if (!login_id) {
+      setSnackbarSeverity('error');
+      setSnackbarMessage('ログインIDを入力してください');
+      return false;
+    }
+    if (!password) {
+      setSnackbarSeverity('error');
+      setSnackbarMessage('パスワードを入力してください');
+      return false;
+    }
+    return true;
+  };
+
   const handleSave = async () => {
-    setConnecting([true, deleteConnecting, requestConnecting]);
     try {
+      setConnecting([true, deleteConnecting, requestConnecting]);
+      if (!isLoginIDPassword()) return;
       // リクエストボディにformDataを含めてAPIエンドポイントにPOSTリクエストを送信
       const response = await fetch('http://localhost:5001/user/register', {
         method: 'POST',
@@ -61,26 +89,42 @@ const Options = (): React.ReactElement => {
         }),
       });
 
-      console.log(login_id, password);
+      setPassword('');
 
-      if (response.ok) {
-        // 保存が成功した場合の処理
-        console.log('設定が保存されました。');
-        await bucket.set({ login_id: login_id, password: password });
-        alert('設定を保存しました');
+      // レスポンスがJSON形式であることを確認
+      if (response.headers.get('content-type')?.includes('application/json')) {
+        const data = await response.json();
+        if (response.ok) {
+          // 保存が成功した場合の処理
+          await bucket.set({ login_id: login_id });
+          setSaved('登録済み');
+          setSnackbarSeverity('success');
+          setSnackbarMessage(data.message);
+        } else {
+          setPassword('');
+          setSnackbarSeverity('error');
+          setSnackbarMessage('エラー(' + response.status + '):' + data.detail);
+        }
       } else {
-        // 保存が失敗した場合の処理
-        console.error('設定の保存に失敗しました。');
+        // JSON形式でない場合の処理
+        setSnackbarSeverity('error');
+        setSnackbarMessage('エラー(410):運営者(shota.mizusaki.01@gmail.com)に連絡してください。');
       }
     } catch (error) {
-      console.error('エラー:', error);
+      setSnackbarSeverity('error');
+      setSnackbarMessage(
+        'エラー(420):' + error + '\n運営者(shota.mizusaki.01@gmail.com)に連絡してください。'
+      );
+    } finally {
+      setConnecting([false, deleteConnecting, requestConnecting]);
+      setSnackbarOpen(true);
     }
-    setConnecting([false, deleteConnecting, requestConnecting]);
   };
 
   const handleDelete = async () => {
-    setConnecting([saveConnecting, true, requestConnecting]);
     try {
+      setConnecting([saveConnecting, true, requestConnecting]);
+      if (!isLoginIDPassword()) return;
       // リクエストボディにformDataを含めてAPIエンドポイントにPOSTリクエストを送信
       const response = await fetch('http://localhost:5001/user/delete', {
         method: 'DELETE',
@@ -93,20 +137,37 @@ const Options = (): React.ReactElement => {
         }),
       });
 
-      if (response.ok) {
-        // 保存が成功した場合の処理
-        console.log('設定が削除されました。');
-        await bucket.set({ login_id: '', password: '' });
-        setPassword('');
-        setLoginID('');
+      console.log(response);
+
+      // レスポンスがJSON形式であることを確認
+      if (response.headers.get('content-type')?.includes('application/json')) {
+        const data = await response.json();
+        if (response.ok) {
+          // 削除が成功した場合の処理
+          await bucket.set({ login_id: '' });
+          setLoginID('');
+          setPassword('');
+          setSnackbarSeverity('success');
+          setSaved('未登録');
+          setSnackbarMessage('データ削除が完了しました。');
+        } else {
+          setSnackbarSeverity('error');
+          setSnackbarMessage('エラー(' + response.status + '):' + data.detail);
+        }
       } else {
-        // 保存が失敗した場合の処理
-        console.error('設定の削除に失敗しました。');
+        // JSON形式でない場合の処理
+        setSnackbarSeverity('error');
+        setSnackbarMessage('エラー(410):運営者(shota.mizusaki.01@gmail.com)に連絡してください。');
       }
     } catch (error) {
-      console.error('エラー:', error);
+      setSnackbarSeverity('error');
+      setSnackbarMessage(
+        'エラー(420):' + error + '\n運営者(shota.mizusaki.01@gmail.com)に連絡してください。'
+      );
+    } finally {
+      setConnecting([saveConnecting, false, requestConnecting]);
+      setSnackbarOpen(true);
     }
-    setConnecting([saveConnecting, false, requestConnecting]);
   };
 
   const handleRequest = async () => {
@@ -168,6 +229,27 @@ const Options = (): React.ReactElement => {
           <Typography sx={{ fontSize: 16 }} gutterBottom>
             神戸大学のログインIDとパスワードを入力して保存してください
           </Typography>
+          <Typography sx={{ fontSize: 16 }} gutterBottom>
+            {isSaved}
+          </Typography>
+          <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={6000}
+            onClose={handleSnackbarClose}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+          >
+            <Alert
+              elevation={6}
+              variant="filled"
+              onClose={handleSnackbarClose}
+              severity={snackbarSeverity}
+            >
+              {snackbarMessage}
+            </Alert>
+          </Snackbar>
           <TextField
             fullWidth
             id="outlined-basic"
@@ -203,7 +285,7 @@ const Options = (): React.ReactElement => {
             <Button
               variant="contained"
               onClick={handleSave}
-              endIcon={saveConnecting ? <CircularProgress size={20} /> : <SaveIcon />}
+              endIcon={saveConnecting ? <CircularProgress size={20} /> : <Save />}
               size="medium"
               sx={{ mt: 2, mr: 2 }}
               disabled={saveConnecting || deleteConnecting || requestConnecting}
@@ -213,7 +295,7 @@ const Options = (): React.ReactElement => {
             <Button
               variant="contained"
               onClick={handleDelete}
-              endIcon={deleteConnecting ? <CircularProgress size={20} /> : <DeleteIcon />}
+              endIcon={deleteConnecting ? <CircularProgress size={20} /> : <Delete />}
               size="medium"
               disabled={saveConnecting || deleteConnecting || requestConnecting}
               sx={{ mt: 2 }}
@@ -226,7 +308,7 @@ const Options = (): React.ReactElement => {
               disabled={saveConnecting || deleteConnecting || requestConnecting}
               size="medium"
               sx={{ mt: 2, mr: 2 }}
-              endIcon = {requestConnecting ? <CircularProgress size={20} /> : <SendIcon />}
+              endIcon = {requestConnecting ? <CircularProgress size={20} /> : <Send />}
             >
               {requestConnecting ? '情報を収集中...' : 'Request'}
             </Button> */}
