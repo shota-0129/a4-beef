@@ -3,14 +3,19 @@ import { getBucket } from '@extend-chrome/storage';
 export interface MyBucket {
   login_id: string;
   password: string;
-  tasks: Task[];
 }
 
-export interface Task {
-  course_name: string;
-  content_category: string;
-  content_title: string;
-  deadline: Date;
+export interface SubjectInfo {
+  name: string;
+  requiredCredits: number;
+  earnedCredits: number;
+  remainingCredits: number;
+}
+
+export interface ScoreData {
+  subjects: SubjectInfo[];
+  canGraduate: boolean;
+  referenceURL: string;
 }
 
 export const bucket = getBucket<MyBucket>('my_bucket', 'sync');

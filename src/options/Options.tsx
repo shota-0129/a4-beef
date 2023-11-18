@@ -149,7 +149,7 @@ const Options = (): React.ReactElement => {
           setPassword('');
           setSnackbarSeverity('success');
           setSaved('未登録');
-          setSnackbarMessage('データ削除が完了しました。');
+          setSnackbarMessage(data.message);
         } else {
           setSnackbarSeverity('error');
           setSnackbarMessage('エラー(' + response.status + '):' + data.detail);
@@ -290,7 +290,7 @@ const Options = (): React.ReactElement => {
               sx={{ mt: 2, mr: 2 }}
               disabled={saveConnecting || deleteConnecting || requestConnecting}
             >
-              {saveConnecting ? 'Beefに確認中...' : 'Save'}
+              {saveConnecting ? 'Beefに確認中...少し時間かかります' : 'Save'}
             </Button>
             <Button
               variant="contained"
