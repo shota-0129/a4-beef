@@ -2,19 +2,24 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
+import SendIcon from '@mui/icons-material/Send';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Box, Button, Container, InputAdornment, Stack, Typography } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 
-import Endicon from '../content/features/main/Endicon';
 import { bucket } from '../myBucket';
 
 const Options = (): React.ReactElement => {
-  const [userID, setUserID] = useState('');
+  const [login_id, setLoginID] = useState('');
   const [password, setPassword] = useState('');
-  const [isConnecting, setConnecting] = useState(false);
+  const [[saveConnecting, deleteConnecting, requestConnecting], setConnecting] = useState([
+    false,
+    false,
+    false,
+  ]);
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -26,15 +31,15 @@ const Options = (): React.ReactElement => {
   useEffect(() => {
     const setBucket = async () => {
       const mybucket = await bucket.get();
-      setUserID(mybucket.userID);
+      setLoginID(mybucket.login_id);
       setPassword(mybucket.password);
     };
     setBucket();
-    console.log(userID, password);
+    console.log(login_id, password);
   }, []);
 
-  const handleUserIDChange = (e: any) => {
-    setUserID(e.target.value);
+  const handleLoginIDChange = (e: any) => {
+    setLoginID(e.target.value);
   };
 
   const handlePasswordChange = (e: any) => {
@@ -42,23 +47,26 @@ const Options = (): React.ReactElement => {
   };
 
   const handleSave = async () => {
+    setConnecting([true, deleteConnecting, requestConnecting]);
     try {
       // リクエストボディにformDataを含めてAPIエンドポイントにPOSTリクエストを送信
-      const response = await fetch('YOUR_API_ENDPOINT_URL', {
+      const response = await fetch('http://localhost:5001/user/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          '': userID,
-          '': password,
+          login_id: login_id,
+          password: password,
         }),
       });
+
+      console.log(login_id, password);
 
       if (response.ok) {
         // 保存が成功した場合の処理
         console.log('設定が保存されました。');
-        await bucket.set({ userID: userID, password: password });
+        await bucket.set({ login_id: login_id, password: password });
         alert('設定を保存しました');
       } else {
         // 保存が失敗した場合の処理
@@ -67,24 +75,30 @@ const Options = (): React.ReactElement => {
     } catch (error) {
       console.error('エラー:', error);
     }
+    setConnecting([false, deleteConnecting, requestConnecting]);
   };
 
   const handleDelete = async () => {
+    setConnecting([saveConnecting, true, requestConnecting]);
     try {
       // リクエストボディにformDataを含めてAPIエンドポイントにPOSTリクエストを送信
-      const response = await fetch('YOUR_API_ENDPOINT_URL', {
-        method: 'POST',
+      const response = await fetch('http://localhost:5001/user/delete', {
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          login_id: login_id,
+          password: password,
+        }),
       });
 
       if (response.ok) {
         // 保存が成功した場合の処理
         console.log('設定が削除されました。');
-        await bucket.set({ userID: '', password: '' });
+        await bucket.set({ login_id: '', password: '' });
         setPassword('');
-        setUserID('');
+        setLoginID('');
       } else {
         // 保存が失敗した場合の処理
         console.error('設定の削除に失敗しました。');
@@ -92,12 +106,13 @@ const Options = (): React.ReactElement => {
     } catch (error) {
       console.error('エラー:', error);
     }
+    setConnecting([saveConnecting, false, requestConnecting]);
   };
 
   const handleRequest = async () => {
-    setConnecting(true);
+    setConnecting([saveConnecting, deleteConnecting, true]);
     const dataToSend = {
-      login_id: userID,
+      login_id: login_id,
       password: password,
     };
     // データをサーバーに送信
@@ -123,7 +138,7 @@ const Options = (): React.ReactElement => {
       // リクエスト失敗
       console.error('Request failed:', response.status, response.statusText);
     }
-    setConnecting(false);
+    setConnecting([saveConnecting, deleteConnecting, false]);
   };
 
   return (
@@ -147,21 +162,24 @@ const Options = (): React.ReactElement => {
             borderRadius: '8px',
           }}
         >
-          <Typography variant="h5" gutterBottom>
+          <Typography sx={{ fontSize: 24 }} gutterBottom>
             初期設定
+          </Typography>
+          <Typography sx={{ fontSize: 16 }} gutterBottom>
+            神戸大学のログインIDとパスワードを入力して保存してください
           </Typography>
           <TextField
             fullWidth
             id="outlined-basic"
-            label="UserID"
-            value={userID}
-            onChange={handleUserIDChange}
+            label="ログインID"
+            value={login_id}
+            onChange={handleLoginIDChange}
             sx={{ mt: 1 }}
           />
           <TextField
             fullWidth
             id="outlined-basic"
-            label="Password"
+            label="パスワード"
             value={password}
             onChange={handlePasswordChange}
             sx={{ mt: 1 }}
@@ -185,31 +203,33 @@ const Options = (): React.ReactElement => {
             <Button
               variant="contained"
               onClick={handleSave}
-              endIcon={<SaveIcon />}
+              endIcon={saveConnecting ? <CircularProgress size={20} /> : <SaveIcon />}
               size="medium"
               sx={{ mt: 2, mr: 2 }}
+              disabled={saveConnecting || deleteConnecting || requestConnecting}
             >
-              Save
+              {saveConnecting ? 'Beefに確認中...' : 'Save'}
             </Button>
             <Button
               variant="contained"
               onClick={handleDelete}
-              endIcon={<DeleteIcon />}
+              endIcon={deleteConnecting ? <CircularProgress size={20} /> : <DeleteIcon />}
               size="medium"
+              disabled={saveConnecting || deleteConnecting || requestConnecting}
               sx={{ mt: 2 }}
             >
-              Delete
+              {deleteConnecting ? '削除中...' : 'Delete'}
             </Button>
             {/* <Button
-            variant="contained"
-            onClick={handleRequest}
-            disabled={isConnecting}
-            size="medium"
-            sx={{ mt: 2, mr: 2 }}
-            endIcon={<Endicon is_connecting={isConnecting} />}
-          >
-            Request
-          </Button> */}
+              variant="contained"
+              onClick={handleRequest}
+              disabled={saveConnecting || deleteConnecting || requestConnecting}
+              size="medium"
+              sx={{ mt: 2, mr: 2 }}
+              endIcon = {requestConnecting ? <CircularProgress size={20} /> : <SendIcon />}
+            >
+              {requestConnecting ? '情報を収集中...' : 'Request'}
+            </Button> */}
           </Stack>
         </Box>
       </Box>

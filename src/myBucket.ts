@@ -1,7 +1,7 @@
 import { getBucket } from '@extend-chrome/storage';
 
 export interface MyBucket {
-  userID: string;
+  login_id: string;
   password: string;
   tasks: Task[];
 }
