@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   IconButton,
+  Link,
   Modal,
   Stack,
   Table,
@@ -48,7 +49,7 @@ const ScoreModal: React.FC<ScoreModalProps> = ({ open, onClose, scoreData }) => 
               fontWeight: 'bold',
             }}
           >
-            卒業は可能？: {scoreData.canGraduate ? '可能です' : 'まだ卒業できません'}
+            {scoreData.canGraduate ? '卒業可能です' : 'まだ卒業できません'}
           </Typography>
         </Box>
         <TableContainer sx={{ mt: 2 }}>
@@ -61,9 +62,11 @@ const ScoreModal: React.FC<ScoreModalProps> = ({ open, onClose, scoreData }) => 
                     必要単位数: {subject.requiredCredits}
                   </TableCell>
                   <TableCell
-                    sx={{ fontSize: 16 }}
+                    sx={{
+                      fontSize: 16,
+                      color: subject.remainingCredits > 0 ? 'error.main' : 'success.main',
+                    }}
                     align="right"
-                    style={{ color: subject.remainingCredits > 0 ? 'red' : 'inherit' }}
                   >
                     残り: {subject.remainingCredits} 単位
                   </TableCell>
@@ -72,8 +75,10 @@ const ScoreModal: React.FC<ScoreModalProps> = ({ open, onClose, scoreData }) => 
             </TableBody>
           </Table>
         </TableContainer>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-          参考便覧: {scoreData.referenceURL}
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }} align="right">
+          <Link href={scoreData.referenceURL} underline="hover" target="_blank" rel="noopener">
+            参考便覧URL
+          </Link>
         </Typography>
       </Box>
     </Modal>

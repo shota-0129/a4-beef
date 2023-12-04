@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { Alert, AlertColor, Button, Input, Snackbar } from '@mui/material';
 
+import { API_ENDPOINT, ERROR_MESSAGES } from '../../../constans';
 import { ScoreData } from '../../../myBucket';
 
 import ScoreModal from './ScoreModal';
@@ -9,9 +10,15 @@ import ScoreModal from './ScoreModal';
 const Main: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isConnecting, setConnecting] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor | undefined>('success'); // 'success' or 'error'
-  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbar, setSnackbar] = useState<{
+    is_open: boolean;
+    severity: AlertColor | undefined; // 'success' or 'error' or undefined
+    message: string;
+  }>({
+    is_open: false,
+    severity: 'success', // 'success' or 'error'
+    message: '',
+  });
   const [scoreModalOpen, setScoreModalOpen] = useState(false); // ScoreModal表示のための状態
   const [scoreData, setScoreData] = useState<ScoreData>({
     subjects: [],
@@ -28,17 +35,19 @@ const Main: React.FC = () => {
   const handleUpload = async () => {
     try {
       setConnecting(true);
+      console.log(selectedFile);
       if (selectedFile) {
         // FormDataを作成し、ファイルを追加
         const formData = new FormData();
-        formData.append('pdfFile', selectedFile);
-
-        // 外部APIエンドポイント
-        const apiEndpoint = 'https://example.com/api/upload-pdf';
+        formData.append('file', selectedFile);
 
         // APIリクエストを送信
-        const response = await fetch(apiEndpoint, {
+        const response = await fetch(API_ENDPOINT.CALCULATE, {
           method: 'POST',
+          mode: 'cors',
+          headers: {
+            accept: 'application/json',
+          },
           body: formData,
           // 必要に応じてヘッダーや認証情報を追加
         });
@@ -46,31 +55,34 @@ const Main: React.FC = () => {
         // レスポンスがJSON形式であることを確認
         if (response.headers.get('content-type')?.includes('application/json')) {
           const data = await response.json();
+          console.log(data);
           if (response.ok) {
             // 成功の場合の処理
             setScoreData(data as ScoreData);
-            setSnackbarSeverity('success');
-            setSnackbarMessage(data.message);
+            // setSnackbarSeverity('success');
+            // setSnackbarMessage(data.message);
             // ScoreModalを開くための状態を更新
             setScoreModalOpen(true);
           } else {
-            setSnackbarSeverity('error');
-            setSnackbarMessage('エラー(' + response.status + '):' + data.detail);
+            setSnackbar({
+              is_open: true,
+              severity: 'error', // 'success' or 'error'
+              message: 'エラー(' + response.status + '):' + data.detail,
+            });
           }
         } else {
           // JSON形式でない場合の処理
-          setSnackbarSeverity('error');
-          setSnackbarMessage('エラー(410):運営者(shota.mizusaki.01@gmail.com)に連絡してください。');
+          throw Error;
         }
       }
-    } catch (error) {
-      setSnackbarSeverity('error');
-      setSnackbarMessage(
-        'エラー(420):' + error + '\n運営者(shota.mizusaki.01@gmail.com)に連絡してください。'
-      );
-    } finally {
       setConnecting(false);
-      setSnackbarOpen(true);
+    } catch (error) {
+      setSnackbar({
+        is_open: true,
+        severity: 'error', // 'success' or 'error'
+        message: ERROR_MESSAGES.CONTACT_MANAGER,
+      });
+      setConnecting(false);
     }
   };
 
@@ -80,7 +92,7 @@ const Main: React.FC = () => {
   };
 
   const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
+    setSnackbar({ ...snackbar, is_open: false });
   };
 
   return (
@@ -115,7 +127,7 @@ const Main: React.FC = () => {
       </Button>
       <ScoreModal open={scoreModalOpen} onClose={handleCloseScoreModal} scoreData={scoreData} />
       <Snackbar
-        open={snackbarOpen}
+        open={snackbar.is_open}
         autoHideDuration={6000}
         onClose={handleSnackbarClose}
         anchorOrigin={{
@@ -123,8 +135,8 @@ const Main: React.FC = () => {
           horizontal: 'right',
         }}
       >
-        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
-          {snackbarMessage}
+        <Alert onClose={handleSnackbarClose} severity={snackbar.severity} sx={{ width: '100%' }}>
+          {snackbar.message}
         </Alert>
       </Snackbar>
     </div>

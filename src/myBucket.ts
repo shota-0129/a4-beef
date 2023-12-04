@@ -3,6 +3,7 @@ import { getBucket } from '@extend-chrome/storage';
 export interface MyBucket {
   login_id: string;
   password: string;
+  isApproval: boolean;
 }
 
 export interface SubjectInfo {
