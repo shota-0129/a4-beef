@@ -4,7 +4,7 @@ import { Box, Button, Container, InputAdornment, Stack, Typography } from '@mui/
 const Popup = () => {
   const handleInitialSetup = () => {
     // ここで新しいタブでオプションページを開く
-    chrome.tabs.create({ url: 'src/options/options.html' });
+    chrome.tabs.create({ url: 'options.html' });
   };
 
   return (

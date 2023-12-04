@@ -61,6 +61,7 @@ const Options = (): React.ReactElement => {
     const setBucket = async () => {
       const mybucket = await bucket.get();
       setUserData(mybucket);
+      setChecked(mybucket.isApproval);
     };
     setBucket();
   }, []);
