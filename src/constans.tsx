@@ -1,10 +1,10 @@
 // constants.ts
 export const API_ENDPOINT = {
-  REGISTER: 'http://localhost:5001/user/register',
-  DELETE: 'http://localhost:5001/user/delete',
+  REGISTER: 'https://7vm383jm7d.execute-api.ap-northeast-1.amazonaws.com/prod/register',
+  DELETE: 'https://7vm383jm7d.execute-api.ap-northeast-1.amazonaws.com/prod/delete',
   REQUEST:
     'https://script.google.com/macros/s/AKfycbx2jImeliw_ZNlb2MaO7aSflcEtIzZ3ed6mV6RvawIbd5kxRXvoXG1q-ofdLQrJFZ8Wsw/exec',
-  CALCULATE: 'http://localhost:5001/calculate_credit',
+  CALCULATE: 'https://7vm383jm7d.execute-api.ap-northeast-1.amazonaws.com/prod/calculate_credit',
 };
 
 export const ERROR_MESSAGES = {

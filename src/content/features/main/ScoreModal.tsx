@@ -75,10 +75,13 @@ const ScoreModal: React.FC<ScoreModalProps> = ({ open, onClose, scoreData }) => 
             </TableBody>
           </Table>
         </TableContainer>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }} align="right">
-          <Link href={scoreData.referenceURL} underline="hover" target="_blank" rel="noopener">
-            参考便覧URL
-          </Link>
+        <Typography variant="body2" sx={{ mt: 2 }} align="right">
+          便覧はこちら(ページだけの場合もあります。)
+          <Box>
+            <Link href={scoreData.referenceUrl} underline="hover" target="_blank" rel="noopener">
+              {scoreData.referenceUrl}
+            </Link>
+          </Box>
         </Typography>
       </Box>
     </Modal>

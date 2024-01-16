@@ -23,7 +23,7 @@ const Main: React.FC = () => {
   const [scoreData, setScoreData] = useState<ScoreData>({
     subjects: [],
     canGraduate: false,
-    referenceURL: '',
+    referenceUrl: '',
   });
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,6 +36,7 @@ const Main: React.FC = () => {
     try {
       setConnecting(true);
       console.log(selectedFile);
+
       if (selectedFile) {
         // FormDataを作成し、ファイルを追加
         const formData = new FormData();
@@ -54,20 +55,23 @@ const Main: React.FC = () => {
 
         // レスポンスがJSON形式であることを確認
         if (response.headers.get('content-type')?.includes('application/json')) {
-          const data = await response.json();
-          console.log(data);
+          const responseData = await response.json();
           if (response.ok) {
             // 成功の場合の処理
-            setScoreData(data as ScoreData);
-            // setSnackbarSeverity('success');
-            // setSnackbarMessage(data.message);
+            console.log(responseData.data);
+            setScoreData(responseData.data as ScoreData);
+            setSnackbar({
+              is_open: true,
+              severity: 'success', // 'success' or 'error'
+              message: responseData.message,
+            });
             // ScoreModalを開くための状態を更新
             setScoreModalOpen(true);
           } else {
             setSnackbar({
               is_open: true,
               severity: 'error', // 'success' or 'error'
-              message: 'エラー(' + response.status + '):' + data.detail,
+              message: 'エラー(' + responseData.status + '):' + responseData.detail,
             });
           }
         } else {
